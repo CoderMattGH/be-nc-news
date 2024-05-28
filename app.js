@@ -9,6 +9,8 @@ app.get('/api', apiController.getEndpoints);
 
 app.get('/api/topics', topicsController.getTopics);
 
+app.get('/api/articles', articlesController.getArticles);
+
 app.get('/api/articles/:article_id', articlesController.getArticleById);
 
 // Handle psql errors
@@ -18,8 +20,6 @@ app.use((err, req, res, next) => {
   if (err.code) {
     if(err.code === '22P02')
       res.status(400).send({msg: 'Bad request!'})
-    else
-      res.status(500).send({msg: 'An unknown error occurred!'});
   } else {
     // Pass on to next error handler
     next(err);
