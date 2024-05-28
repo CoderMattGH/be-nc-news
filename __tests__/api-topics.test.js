@@ -10,7 +10,7 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("GET /api/topics", () => {
-  test("Returns a status of 200 OK", () => {
+  test.only("Returns a status of 200 OK", () => {
     return request(app).get('/api/topics').expect(200);
   });
 
