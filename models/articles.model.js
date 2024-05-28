@@ -5,8 +5,8 @@ const selectArticles = () => {
 
   const queryStr =
     `SELECT articles.author, articles.title, articles.article_id,
-      articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
-      COUNT(comments.comment_id)::INT AS comment_count
+        articles.topic, articles.created_at, articles.votes, 
+        articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
       FROM comments
       JOIN articles ON comments.article_id = articles.article_id
       GROUP BY articles.article_id
@@ -17,11 +17,10 @@ const selectArticles = () => {
     .then((result) => {
       const articles = result.rows;
 
-      if (!articles.length) {
+      if (!articles.length)
         return Promise.reject({status: 404, msg: "Articles not found!"});
-      } else {
+      else
         return articles;
-      }
     });
 };
 
