@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 
 const topicsController = require('./controllers/topics.controller.js');
+const apiController = require('./controllers/api.controller.js');
+
+app.get('/api', apiController.getEndpoints);
 
 app.get('/api/topics', topicsController.getTopics);
 
@@ -23,6 +26,9 @@ app.use((err, req, res, next) => {
 
   if (err.status === 404) {
     res.status(404).send({msg: err.msg});
+  } else {
+    // Pass on to next error handler
+    next(err);
   }
 });
 
