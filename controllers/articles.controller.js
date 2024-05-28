@@ -1,5 +1,17 @@
 const articlesModel = require('../models/articles.model.js');
 
+const getArticles = (req, res, next) => {
+  console.log("In getArticles() in articles.controller!");
+
+  articlesModel.selectArticles()
+    .then((articles) => {
+      res.status(200).send({articles: articles});
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 const getArticleById = (req, res, next) => {
   console.log("In getArticleById() in articles.controller!");
 
@@ -14,4 +26,4 @@ const getArticleById = (req, res, next) => {
     });
 };
 
-module.exports = { getArticleById };
+module.exports = { getArticles, getArticleById };
