@@ -85,6 +85,9 @@ describe("GET /api/articles", () => {
 
           // Expect article_img_url to be valid URL
           expect(() => new URL(article.article_img_url)).not.toThrow(Error);
+
+          // Expect created_at to be valid Date
+          expect(() => new Date(article.created_at)).not.toThrow(Error);
         });
       });
   });
