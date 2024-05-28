@@ -1,5 +1,3 @@
-const endpointsObj = require('../endpoints.json');
-
 const getEndpoints = (req, res, next) => {
   console.log("In getEndpoints() in api.controller!");
 
