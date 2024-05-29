@@ -6,6 +6,8 @@ const topicsController = require('./controllers/topics.controller.js');
 const articlesController = require('./controllers/articles.controller.js');
 const commentsController = require('./controllers/comments.controller.js');
 
+app.use(express.json());
+
 app.get('/api', apiController.getEndpoints);
 
 app.get('/api/topics', topicsController.getTopics);
@@ -16,6 +18,9 @@ app.get('/api/articles/:article_id', articlesController.getArticleById);
 
 app.get('/api/articles/:article_id/comments', 
     commentsController.getCommentsByArticleId);
+
+app.post('/api/articles/:article_id/comments',
+    commentsController.postCommentByArticleId);
 
 // Handle psql errors
 app.use((err, req, res, next) => {
