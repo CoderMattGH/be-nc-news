@@ -91,5 +91,9 @@
       "votes": 10,
       "article_img_url": "http://img-link.com/my_img.jpg"      
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes the specified comment",
+    "queries": []
   }
 }
