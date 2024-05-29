@@ -62,32 +62,32 @@ describe("GET /api/articles/:article_id/comments", () => {
 
 describe("POST /api/articles/:article_id/comments", () => {
   test(
-    "Returns 200 OK when provided with an existing user and article and valid body", 
-    () => {
-      const commentObj = {
-        username: "butter_bridge",
-        body: "That would be an ecumenical matter."
-      };
+      "Returns 200 OK when provided with an existing user and article and valid body", 
+      () => {
+        const commentObj = {
+          username: "butter_bridge",
+          body: "That would be an ecumenical matter."
+        };
 
-      return request(app).post('/api/articles/2/comments').send(commentObj)
-          .expect(200)
-          .then(({body}) => {
-            const {comment} = body;
-            console.log(comment);
+        return request(app).post('/api/articles/2/comments').send(commentObj)
+            .expect(200)
+            .then(({body}) => {
+              const {comment} = body;
+              console.log(comment);
 
-            expect(comment).toMatchObject({
-              comment_id: expect.any(Number),
-              body: 'That would be an ecumenical matter.',
-              article_id: 2,
-              author: 'butter_bridge',
-              votes: 0,
-              created_at: expect.any(String)
+              expect(comment).toMatchObject({
+                comment_id: expect.any(Number),
+                body: 'That would be an ecumenical matter.',
+                article_id: 2,
+                author: 'butter_bridge',
+                votes: 0,
+                created_at: expect.any(String)
+              });
+
+              // Check 'created_at' key is valid Date
+              expect(() => new Date(comment.created_at)).not.toThrow(Error);
             });
-
-            // Check 'created_at' key is valid Date
-            expect(() => new Date(comment.created_at)).not.toThrow(Error);
-          });
-    }
+        }
   );
   
   test("Returns a 404 when provided with an non-existent article id", () => {
