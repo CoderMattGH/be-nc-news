@@ -1,7 +1,5 @@
 const db = require('../db/connection.js');
 
-const miscService = require('../services/misc.service.js');
-
 const selectCommentsByArticleId = (articleId) => {
   console.log("In selectCommentsByArticleId() in comments.model!");
 
