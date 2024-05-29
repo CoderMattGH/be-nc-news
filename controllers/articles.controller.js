@@ -26,4 +26,22 @@ const getArticleById = (req, res, next) => {
       });
 };
 
-module.exports = {getArticles, getArticleById};
+const patchArticleById = (req, res, next) => {
+  console.log("In patchArticleById() in articles.controller.js!");
+
+  const articleId = req.params.article_id;
+  const voteIncrement = req.body.inc_votes;
+
+  if(voteIncrement === undefined)
+    next({status: 400, msg: "Bad request!"});
+
+  return articlesModel.updateArticleVotesById(articleId, voteIncrement)
+      .then((article) => {
+        res.status(200).send({article});
+      })
+      .catch((err) => {
+        next(err);
+      });
+};
+
+module.exports = {getArticles, getArticleById, patchArticleById};
