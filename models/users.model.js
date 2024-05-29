@@ -1,7 +1,9 @@
+const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
 
 const selectUserByUsername = (username) => {
-  console.log("In selectUserByUsername() in users.model!");
+  logger.debug(`In selectUserByUsername() in users.model`);
+  logger.info(`Selecting user from database where username:${username}`);
 
   return db.query(`SELECT * FROM users WHERE username = $1`, [username])
       .then(({rows}) => {
@@ -16,7 +18,7 @@ const selectUserByUsername = (username) => {
 };
 
 const selectAllUsers = () => {
-  console.log("In selectAllUsers() in users.model!");
+  logger.debug(`In selectAllUsers() in users.model`);
 
   return db.query(`SELECT username, name, avatar_url FROM users;`)
       .then(({rows: users}) => {

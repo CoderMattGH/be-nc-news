@@ -1,7 +1,9 @@
+const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
 
 const selectCommentsByArticleId = (articleId) => {
-  console.log("In selectCommentsByArticleId() in comments.model!");
+  logger.debug(`In selectCommentsByArticleId() in comments.model`);
+  logger.info(`Selecting comments from database where article_id:${articleId}`);
 
   return db
       .query(
@@ -13,7 +15,9 @@ const selectCommentsByArticleId = (articleId) => {
 };
 
 const createComment = (articleId, author, body) => {
-  console.log("In createComment() in comments.model!");
+  logger.debug(`In createComment() in comments.model`);
+  logger.info(`Inserting comment into database where article_id:${articleId} `
+      + `author:${author}`);
 
   return db
       .query(
@@ -27,7 +31,8 @@ const createComment = (articleId, author, body) => {
 }
 
 const deleteCommentById = (commentId) => {
-  console.log("In deleteCommentById() in comments.model!");
+  logger.debug(`In deleteCommentById() in comments.model`);
+  logger.info(`Deleting comment from database where comment_id:${commentId}`);
 
   return db
       .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`,

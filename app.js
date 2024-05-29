@@ -1,3 +1,4 @@
+const logger = require('./logger/logger.js');
 const express = require('express');
 const app = express();
 
@@ -31,7 +32,7 @@ app.get('/api/users', usersController.getAllUsers);
 
 // Handle psql errors
 app.use((err, req, res, next) => {
-  console.log("In psql error handler!");
+  logger.debug("In psql error handler");
 
   if(err.code === '22P02')
     res.status(400).send({msg: 'Bad request!'})
@@ -41,7 +42,7 @@ app.use((err, req, res, next) => {
 
 // Handle misc. errors
 app.use((err, req, res, next) => {
-  console.log("In misc. error handler!");
+  logger.debug("In misc. error handler");
 
   if (err.status && err.msg)
     res.status(err.status).send({msg: err.msg});

@@ -1,7 +1,8 @@
+const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
 
 const selectArticles = (topic) => {
-  console.log("In selectArticles() in articles.model!");
+  logger.debug("In selectArticles() in articles.model");
 
   let queryStr =
       `SELECT articles.author, articles.title, articles.article_id,
@@ -21,6 +22,9 @@ const selectArticles = (topic) => {
       `GROUP BY articles.article_id 
         ORDER BY articles.created_at DESC;`;
 
+  logger.info(`Selecting all articles from database `
+      + `${(topic) ? `where topic:${topic}` : ''}`);
+
   return db.query(queryStr, queryVals)
       .then(({rows: articles}) => {
           return articles;
@@ -28,7 +32,7 @@ const selectArticles = (topic) => {
 };
 
 const selectArticleById = (articleId) => {
-  console.log("In selectArticleById() in articles.model!");
+  logger.debug("In selectArticleById() in articles.model");
 
   const queryStr = 
       `SELECT articles.article_id, articles.title, articles.topic,
@@ -39,6 +43,8 @@ const selectArticleById = (articleId) => {
         RIGHT JOIN articles ON comments.article_id = articles.article_id 
         WHERE articles.article_id = $1 
         GROUP BY articles.article_id;`;
+
+  logger.info(`Selecting article from database where article_id:${articleId}`);
 
   return db.query(queryStr, [articleId])
       .then(({rows}) => {
@@ -51,22 +57,10 @@ const selectArticleById = (articleId) => {
       });
 };
 
-// const selectArticleById = (articleId) => {
-//   console.log("In selectArticleById() in articles.model!");
-
-//   return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
-//       .then(({rows}) => {
-//         const article = rows[0];
-
-//         if (!article)
-//           return Promise.reject({status: 404, msg: "Resource not found!"});
-//         else 
-//           return article;
-//       });
-// };
-
 const updateArticleVotesById = (articleId, voteIncrement) => {
-  console.log("In updateArticleById() in articles.model!");
+  logger.debug(`In updateArticleById() in articles.model`);
+  logger.info(`Updating article in database where article_id:${articleId}`
+      + ` with vote_increment:${voteIncrement}`);
 
   return db
       .query(

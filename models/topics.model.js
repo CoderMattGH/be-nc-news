@@ -1,7 +1,8 @@
+const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
 
 const selectTopics = () => {
-  console.log("In selectTopics() in topics.model!")
+  logger.debug(`In selectTopics() in topics.model`);
 
   return db.query(`SELECT * FROM topics`)
       .then((topics) => {
