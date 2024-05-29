@@ -61,7 +61,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("POST /api/articles/:article_id/comments", () => {
-  test.only(
+  test(
     "Returns 200 OK when provided with an existing user and article and valid body", 
     () => {
       const commentObj = {
@@ -90,7 +90,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     }
   );
   
-  test.only("Returns a 404 when provided with an non-existent article id", () => {
+  test("Returns a 404 when provided with an non-existent article id", () => {
     const commentObj = {
       username: "butter_bridge",
       body: "That would be an ecumenical matter."
@@ -104,7 +104,7 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 
   // TODO: Potential security violation exposing extant usernames?
-  test.only("Returns a 404 when provided with a non-existent username", () => {
+  test("Returns a 404 when provided with a non-existent username", () => {
     const commentObj = {
       username: "unknown_user",
       body: "That would be an ecumenical matter."
@@ -117,7 +117,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         });
   });
 
-  test.only("Returns a 400 when article_id is not a number", () => {
+  test("Returns a 400 when article_id is not a number", () => {
     const commentObj = {
       username: "butter_bridge",
       body: "That would be an ecumenical matter."
@@ -130,7 +130,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         });
   });
 
-  test.only("Returns a 400 when comment object has invalid keys", () => {
+  test("Returns a 400 when comment object has invalid keys", () => {
     const commentObj = {
       invalidKey: 'random'
     };
@@ -142,7 +142,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         });
   });
 
-  test.only("Returns a 400 when comment object has invalid keys", () => {
+  test("Returns a 400 when comment object has invalid keys", () => {
     const commentObj = {
       username: 22,
       body: 22
