@@ -16,7 +16,7 @@ const selectUserByUsername = (username) => {
 };
 
 const selectAllUsers = () => {
-  console.log("In selectAllUsers() om users.model!");
+  console.log("In selectAllUsers() in users.model!");
 
   return db.query(`SELECT username, name, avatar_url FROM users;`)
       .then(({rows: users}) => {

@@ -85,6 +85,55 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("GET /api/articles?topic=<topic_name>", () => {
+  test("Returns the articles filtered by topic", () => {
+    return request(app).get('/api/articles?topic=mitch').expect(200)
+        .then(({body}) => {
+          const articles = body.articles;
+
+          expect(articles.length).toBe(4);
+
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),              
+            });
+
+            // Does not contain 'body' key
+            expect(article.body).toBeUndefined();
+  
+            // Expect article_img_url to be valid URL
+            expect(() => new URL(article.article_img_url)).not.toThrow(Error);
+  
+            // Expect created_at to be valid Date
+            expect(() => new Date(article.created_at)).not.toThrow(Error);          
+          });
+        });
+  });
+
+  test("Returns a 200 OK when an extant topic but no existing articles", () => {
+    return request(app).get('/api/articles?topic=paper').expect(200)
+        .then(({body}) => {
+          const articles = body.articles;
+
+          expect(articles.length).toBe(0);
+        });
+  });
+ 
+  test("Returns a 404 when given a topic that does not exist", () => {
+    return request(app).get('/api/articles?topic=banana').expect(404)
+        .then(({body}) => {
+          expect(body.msg).toBe('Resource not found!');
+        });
+  });
+});
+
 describe("PATCH /api/articles/:article_id", () => {
   test("Returns a 200 when given an extant article and valid request", () => {
     const reqObj = {inc_votes: 10};

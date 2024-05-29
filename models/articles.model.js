@@ -1,22 +1,28 @@
 const db = require('../db/connection.js');
 
-const selectArticles = () => {
+const selectArticles = (topic) => {
   console.log("In selectArticles() in articles.model!");
 
-  const queryStr =
+  let queryStr =
       `SELECT articles.author, articles.title, articles.article_id,
           articles.topic, articles.created_at, articles.votes, 
           articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
         FROM comments
-        JOIN articles ON comments.article_id = articles.article_id
-        GROUP BY articles.article_id
+        JOIN articles ON comments.article_id = articles.article_id `;
+
+  const queryVals = [];
+
+  if (topic) {
+    queryVals.push(topic);
+    queryStr += `WHERE articles.topic = $1 `;
+  }
+
+  queryStr += 
+      `GROUP BY articles.article_id 
         ORDER BY articles.created_at DESC;`;
 
-  return db.query(queryStr)
+  return db.query(queryStr, queryVals)
       .then(({rows: articles}) => {
-        if (!articles.length)
-          return Promise.reject({status: 404, msg: "Resource not found!"});
-        else
           return articles;
       });
 };
