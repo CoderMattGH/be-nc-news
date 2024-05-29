@@ -17,8 +17,8 @@ describe("GET /api/articles/:article_id/comments", () => {
 
   test("Returns a comments array for the specified article", () => {
     return request(app).get('/api/articles/1/comments').expect(200)
-      .then((result) => {
-        const comments = result.body.comments;
+      .then(({body}) => {
+        const comments = body.comments;
 
         expect(comments.length).toBe(11);
 
@@ -43,23 +43,23 @@ describe("GET /api/articles/:article_id/comments", () => {
 
   test("Returns a 404 when the article_id does not exist", () => {
     return request(app).get('/api/articles/9999/comments').expect(404)
-      .then((result) => {
-        expect(result.body.msg).toBe("Article not found!");
+      .then(({body}) => {
+        expect(body.msg).toBe("Article not found!");
       });
   });
 
   test("Returns a 400 when the article_id is not a number", () => {
     return request(app).get('/api/articles/banana/comments').expect(400)
-      .then((result) => {
-        expect(result.body.msg).toBe("Bad request!");
+      .then(({body}) => {
+        expect(body.msg).toBe("Bad request!");
       });
   });
 
   test("Returns a 200 OK when the article_id exists, but no comments exist",
-    () => {
-      return request(app).get('/api/articles/4/comments').expect(200)
-        .then((result) => {
-          expect(result.body.comments).toHaveLength(0);
-        });
-    });
+      () => {
+        return request(app).get('/api/articles/4/comments').expect(200)
+          .then(({body}) => {
+            expect(body.comments).toHaveLength(0);
+          });
+      });
 });

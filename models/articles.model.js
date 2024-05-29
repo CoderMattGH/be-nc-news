@@ -14,9 +14,7 @@ const selectArticles = () => {
 
   return db
     .query(queryStr)
-    .then((result) => {
-      const articles = result.rows;
-
+    .then(({rows: articles}) => {
       if (!articles.length)
         return Promise.reject({status: 404, msg: "Articles not found!"});
       else
@@ -29,8 +27,8 @@ const selectArticleById = (articleId) => {
 
   return db
     .query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
-    .then((result) => {
-      const article = result.rows[0];
+    .then(({rows}) => {
+      const article = rows[0];
 
       if (!article)
         return Promise.reject({status: 404, msg: "Article not found!"});
@@ -39,4 +37,4 @@ const selectArticleById = (articleId) => {
     });
 };
 
-module.exports = { selectArticles, selectArticleById };
+module.exports = {selectArticles, selectArticleById};

@@ -17,8 +17,8 @@ describe("GET /api/articles:article_id", () => {
 
   test("Returns the correct article", () => {
     return request(app).get('/api/articles/2').expect(200)
-      .then((result) => {
-        const article = result.body.article;
+      .then(({body}) => {
+        const article = body.article;
 
         expect(article).toMatchObject({
           article_id: 2,
@@ -29,27 +29,27 @@ describe("GET /api/articles:article_id", () => {
           created_at: '2020-10-16T05:03:00.000Z',
           votes: 0,
           article_img_url:
-            'https://images.pexels.com/photos/158651/news-newsletter'
-            + '-newspaper-information-158651.jpeg?w=700&h=700'
+              'https://images.pexels.com/photos/158651/news-newsletter'
+              + '-newspaper-information-158651.jpeg?w=700&h=700'
         });
 
         expect(article.body.length).toBe(1123);
         expect(article.body).toContain(
-          'Call me Mitchell. Some years ago—never mind how long precisely');
+            'Call me Mitchell. Some years ago—never mind how long precisely');
       });
   });
 
   test("Returns a 404 when article_id does not exist", () => {
     return request(app).get('/api/articles/99999').expect(404)
-      .then((result) => {
-        expect(result.body.msg).toBe('Article not found!');
+      .then(({body}) => {
+        expect(body.msg).toBe('Article not found!');
       });
   });
 
   test("Returns a 400 when article_id is not a number", () => {
     return request(app).get('/api/articles/banana').expect(400)
-      .then((result) => {
-        expect(result.body.msg).toBe('Bad request!');
+      .then(({body}) => {
+        expect(body.msg).toBe('Bad request!');
       });
   });
 });
@@ -61,8 +61,8 @@ describe("GET /api/articles", () => {
 
   test("Returns a valid articles array in descending order", () => {
     return request(app).get('/api/articles').expect(200)
-      .then((result) => {
-        const articles = result.body.articles;
+      .then(({body}) => {
+        const articles = body.articles;
         expect(articles).toHaveLength(5);
 
         // Sorted in descending order by created_at key

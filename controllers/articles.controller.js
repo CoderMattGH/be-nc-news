@@ -5,7 +5,7 @@ const getArticles = (req, res, next) => {
 
   articlesModel.selectArticles()
     .then((articles) => {
-      res.status(200).send({articles: articles});
+      res.status(200).send({articles});
     })
     .catch((err) => {
       next(err);
@@ -19,11 +19,11 @@ const getArticleById = (req, res, next) => {
 
   articlesModel.selectArticleById(articleId)
     .then((article) => {
-      res.status(200).send({article: article});
+      res.status(200).send({article});
     })
     .catch((err) => {
       next(err);
     });
 };
 
-module.exports = { getArticles, getArticleById };
+module.exports = {getArticles, getArticleById};

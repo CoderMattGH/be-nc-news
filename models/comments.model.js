@@ -7,15 +7,12 @@ const selectCommentsByArticleId = (articleId) => {
 
   // First check article is valid and exists
   return articlesModel.selectArticleById(articleId)
-    .then(() => {
-      // Article exists!
+    .then(() => {   // Article exists!
       return db.query(
-        `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`, 
-        [articleId]);
+          `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`, 
+          [articleId]);
     })
-    .then((result) => {
-      const comments = result.rows;
-
+    .then(({rows: comments}) => {
       return comments;
     })
     .catch((err) => {
@@ -23,4 +20,4 @@ const selectCommentsByArticleId = (articleId) => {
     });
 };
 
-module.exports = { selectCommentsByArticleId };
+module.exports = {selectCommentsByArticleId};

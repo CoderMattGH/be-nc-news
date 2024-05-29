@@ -4,4 +4,4 @@ const getEndpoints = (req, res, next) => {
   res.status(200).send(require('../endpoints.json'));
 };
 
-module.exports = { getEndpoints };
+module.exports = {getEndpoints};
