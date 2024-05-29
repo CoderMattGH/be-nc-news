@@ -15,4 +15,13 @@ const selectUserByUsername = (username) => {
       });
 };
 
-module.exports = {selectUserByUsername};
+const selectAllUsers = () => {
+  console.log("In selectAllUsers() om users.model!");
+
+  return db.query(`SELECT username, name, avatar_url FROM users;`)
+      .then(({rows: users}) => {
+        return users;
+      });
+};
+
+module.exports = {selectUserByUsername, selectAllUsers};
