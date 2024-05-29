@@ -10,10 +10,6 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("GET /api/topics", () => {
-  test("Returns a status of 200 OK", () => {
-    return request(app).get('/api/topics').expect(200);
-  });
-
   test("Returns an array of all the topics", () => {
     return request(app).get('/api/topics').expect(200)
       .then(({body}) => {

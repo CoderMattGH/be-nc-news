@@ -11,10 +11,6 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("GET /api/articles:article_id", () => {
-  test("Returns 200 OK when given valid id and existing article_id", () => {
-    return request(app).get('/api/articles/2').expect(200);
-  });
-
   test("Returns the correct article", () => {
     return request(app).get('/api/articles/2').expect(200)
       .then(({body}) => {
@@ -55,10 +51,6 @@ describe("GET /api/articles:article_id", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("Returns a 200 OK", () => {
-    return request(app).get('/api/articles').expect(200);
-  });
-
   test("Returns a valid articles array in descending order", () => {
     return request(app).get('/api/articles').expect(200)
       .then(({body}) => {
