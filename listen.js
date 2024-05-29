@@ -1,5 +1,8 @@
+const logger = require(`./logger/logger.js`);
 const app = require('./app.js');
 
-app.listen(9090, () => {
-  console.log("Successfully listening on port 9090!");
+const PORT_NO = 9090;
+
+app.listen(PORT_NO, () => {
+  logger.info(`Successfully listening on port ${PORT_NO}`);
 });

@@ -1,3 +1,4 @@
+const logger = require('../logger/logger.js');
 const format = require('pg-format');
 const db = require('../db/connection.js');
 
@@ -10,7 +11,9 @@ const db = require('../db/connection.js');
  *    error object.
  */
 const checkValueExists = async (table, column, value) => {
-  console.log("In doesDBValueExist() in misc.service.js!");
+  logger.debug(`In checkValueExists() in misc.service`);
+  logger.info(`Checking value exists in database where table:${table} `
+      + `column:${column} value:${value}`);
 
   let queryStr = format('SELECT * FROM %I WHERE %I = $1', table, column);
 

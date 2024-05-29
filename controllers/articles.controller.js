@@ -1,8 +1,9 @@
+const logger = require('../logger/logger.js');
 const articlesModel = require('../models/articles.model.js');
 const miscService = require('../services/misc.service.js');
 
 const getArticles = (req, res, next) => {
-  console.log("In getArticles() in articles.controller!");
+  logger.debug(`In getArticles() in articles.controller`);
 
   const topic = req.query.topic;
 
@@ -25,15 +26,16 @@ const getArticles = (req, res, next) => {
         res.status(200).send({articles});
       })
       .catch((err) => {
-        console.log(err, '<--- err');
         next(err);
       });
 };
 
 const getArticleById = (req, res, next) => {
-  console.log("In getArticleById() in articles.controller!");
-
+  logger.debug(`In getArticleById() in articles.controller`);
+  
   const articleId = req.params.article_id;
+
+  logger.info(`Fetching article where article_id:${articleId}`);
 
   articlesModel.selectArticleById(articleId)
       .then((article) => {
@@ -45,10 +47,13 @@ const getArticleById = (req, res, next) => {
 };
 
 const patchArticleById = (req, res, next) => {
-  console.log("In patchArticleById() in articles.controller.js!");
-
+  logger.debug(`In patchArticleById() in articles.controller`);
+  
   const articleId = req.params.article_id;
   const voteIncrement = req.body.inc_votes;
+  
+  logger.info(`Patching article where article_id:${articleId} with vote_inc:`
+      + `${voteIncrement}`);
 
   if(voteIncrement === undefined)
     next({status: 400, msg: "Bad request!"});

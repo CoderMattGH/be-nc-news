@@ -1,10 +1,13 @@
+const logger = require('../logger/logger.js');
 const commentsModel = require('../models/comments.model.js');
 const miscService = require('../services/misc.service.js');
 
 const getCommentsByArticleId = (req, res, next) => {
-  console.log("In getCommentsByArticleId() in comments.controller!");
+  logger.debug(`In getCommentsByArticleId() in comments.controller`);
 
   const articleId = req.params.article_id;
+
+  logger.info(`Getting comments where article_id:${articleId}`);
 
   // Check article_id exists
   miscService.checkValueExists('articles', 'article_id', articleId)
@@ -20,10 +23,13 @@ const getCommentsByArticleId = (req, res, next) => {
 };
 
 const postCommentByArticleId = (req, res, next) => {
-  console.log("In postCommentsByArticleId() in comments.controller!");
+  logger.debug(`In postCommentsByArticleId() in comments.controller`);
 
   const articleId = req.params.article_id;
   const {username, body} = req.body;
+
+  logger.info(`Posting comment where article_id:${articleId} and username:`
+      + `${username}`);
 
   // Check article_id exists
   miscService.checkValueExists('articles', 'article_id', articleId)
@@ -43,9 +49,11 @@ const postCommentByArticleId = (req, res, next) => {
 };
 
 const deleteCommentById = (req, res, next) => {
-  console.log("In deleteCommentById() in comments.controller!");
+  logger.debug(`In deleteCommentById() in comments.controller`);
 
   const commentId = req.params.comment_id;
+
+  logger.debug(`Deleting comment where comment_id:${commentId}`);
 
   commentsModel.deleteCommentById(commentId)
       .then(() => {

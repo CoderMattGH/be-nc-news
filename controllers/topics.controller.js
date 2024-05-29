@@ -1,7 +1,8 @@
+const logger = require('../logger/logger.js');
 const topicsModel = require('../models/topics.model.js');
 
 const getTopics = (req, res, next) => {
-  console.log("In getTopics() in topics.controller!");
+  logger.debug("In getTopics() in topics.controller");
 
   topicsModel.selectTopics()
       .then((topics) => {

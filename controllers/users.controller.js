@@ -1,7 +1,8 @@
+const logger = require(`../logger/logger.js`);
 const usersModel = require('../models/users.model.js');
 
 const getAllUsers = (req, res, next) => {
-  console.log("In getAllUsers() in users.controller!");
+  logger.debug(`In getAllUsers() in users.controller`);
 
   usersModel.selectAllUsers()
       .then((users) => {
