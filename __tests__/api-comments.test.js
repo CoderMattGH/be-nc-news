@@ -11,10 +11,6 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("Returns 200 OK when given an existant article_id", () => {
-    return request(app).get('/api/articles/1/comments').expect(200);
-  });
-
   test("Returns a comments array for the specified article", () => {
     return request(app).get('/api/articles/1/comments').expect(200)
       .then(({body}) => {

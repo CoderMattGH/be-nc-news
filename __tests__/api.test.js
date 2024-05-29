@@ -10,10 +10,6 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("GET /api", () => {
-  test("Returns a 200 status OK", () => {
-    return request(app).get('/api').expect(200);
-  });
-
   test("Returns a valid endpoints object", () => {
     return request(app).get('/api').expect(200)
       .then(({body: endpointsObj}) => {
