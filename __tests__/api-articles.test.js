@@ -26,12 +26,20 @@ describe("GET /api/articles:article_id", () => {
             votes: 0,
             article_img_url:
                 'https://images.pexels.com/photos/158651/news-newsletter'
-                + '-newspaper-information-158651.jpeg?w=700&h=700'
+                + '-newspaper-information-158651.jpeg?w=700&h=700',
+            comment_count: 0
           });
 
           expect(article.body.length).toBe(1123);
           expect(article.body).toContain(
               'Call me Mitchell. Some years ago—never mind how long precisely');
+        });
+  });
+
+  test("Returns the correct comment count", () => {
+    return request(app).get('/api/articles/1').expect(200)
+        .then(({body}) => {
+          expect(body.article.comment_count).toBe(11);
         });
   });
 
