@@ -30,7 +30,17 @@ const selectArticles = (topic) => {
 const selectArticleById = (articleId) => {
   console.log("In selectArticleById() in articles.model!");
 
-  return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
+  const queryStr = 
+      `SELECT articles.article_id, articles.title, articles.topic,
+          articles.author, articles.body, articles.created_at, articles.votes, 
+          articles.article_img_url, 
+          COUNT(comments.comment_id)::INT AS comment_count 
+        FROM comments 
+        RIGHT JOIN articles ON comments.article_id = articles.article_id 
+        WHERE articles.article_id = $1 
+        GROUP BY articles.article_id;`;
+
+  return db.query(queryStr, [articleId])
       .then(({rows}) => {
         const article = rows[0];
 
@@ -40,6 +50,20 @@ const selectArticleById = (articleId) => {
           return article;
       });
 };
+
+// const selectArticleById = (articleId) => {
+//   console.log("In selectArticleById() in articles.model!");
+
+//   return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
+//       .then(({rows}) => {
+//         const article = rows[0];
+
+//         if (!article)
+//           return Promise.reject({status: 404, msg: "Resource not found!"});
+//         else 
+//           return article;
+//       });
+// };
 
 const updateArticleVotesById = (articleId, voteIncrement) => {
   console.log("In updateArticleById() in articles.model!");
