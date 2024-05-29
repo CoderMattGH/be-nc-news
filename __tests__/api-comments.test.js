@@ -73,7 +73,6 @@ describe("POST /api/articles/:article_id/comments", () => {
             .expect(200)
             .then(({body}) => {
               const {comment} = body;
-              console.log(comment);
 
               expect(comment).toMatchObject({
                 comment_id: expect.any(Number),
