@@ -40,7 +40,7 @@ describe("GET /api/articles/:article_id/comments", () => {
   test("Returns a 404 when the article_id does not exist", () => {
     return request(app).get('/api/articles/9999/comments').expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe("Article not found!");
+          expect(body.msg).toBe("Resource not found!");
         });
   });
 
@@ -99,11 +99,10 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app).post('/api/articles/9999/comments').send(commentObj)
         .expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe('Article not found!');
+          expect(body.msg).toBe('Resource not found!');
         });
   });
 
-  // TODO: Potential security violation exposing extant usernames?
   test("Returns a 404 when provided with a non-existent username", () => {
     const commentObj = {
       username: "unknown_user",
@@ -113,7 +112,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app).post('/api/articles/2/comments').send(commentObj)
         .expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe('Username not found!');
+          expect(body.msg).toBe('Resource not found!');
         });
   });
 
