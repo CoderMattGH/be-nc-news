@@ -15,7 +15,7 @@ app.get('/api/articles', articlesController.getArticles);
 app.get('/api/articles/:article_id', articlesController.getArticleById);
 
 app.get('/api/articles/:article_id/comments', 
-  commentsController.getCommentsByArticleId);
+    commentsController.getCommentsByArticleId);
 
 // Handle psql errors
 app.use((err, req, res, next) => {
@@ -24,7 +24,7 @@ app.use((err, req, res, next) => {
   if(err.code === '22P02')
     res.status(400).send({msg: 'Bad request!'})
   else
-    next(err);      // Pass on to next error handler
+    next(err);
 });
 
 // Handle misc. errors
@@ -34,7 +34,7 @@ app.use((err, req, res, next) => {
   if (err.status && err.msg)
     res.status(err.status).send({msg: err.msg});
   else
-    next(err);      // Pass on to next error handler
+    next(err);
 });
 
 module.exports = app;
