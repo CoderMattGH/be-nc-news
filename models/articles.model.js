@@ -35,4 +35,23 @@ const selectArticleById = (articleId) => {
       });
 };
 
-module.exports = {selectArticles, selectArticleById};
+const updateArticleVotesById = (articleId, voteIncrement) => {
+  console.log("In updateArticleById() in articles.model!");
+
+  return db
+      .query(
+          `UPDATE articles SET votes = GREATEST(votes + $1, 0) 
+            WHERE article_id = $2 
+            RETURNING *;`,
+          [voteIncrement, articleId])
+      .then(({rows}) => {
+        const article = rows[0];
+
+        if (!article)
+          return Promise.reject({status: 404, msg: "Resource not found!"});
+        else
+          return article;
+      });
+};
+
+module.exports = {selectArticles, selectArticleById, updateArticleVotesById};
