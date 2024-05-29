@@ -42,4 +42,19 @@ const postCommentByArticleId = (req, res, next) => {
       });
 };
 
-module.exports = {getCommentsByArticleId, postCommentByArticleId};
+const deleteCommentById = (req, res, next) => {
+  console.log("In deleteCommentById() in comments.controller!");
+
+  const commentId = req.params.comment_id;
+
+  commentsModel.deleteCommentById(commentId)
+      .then(() => {
+        res.status(204).send();
+      })
+      .catch((err) => {
+        next(err);
+      });
+};
+
+module.exports = {getCommentsByArticleId, postCommentByArticleId, 
+    deleteCommentById};

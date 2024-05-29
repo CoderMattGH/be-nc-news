@@ -26,4 +26,18 @@ const createComment = (articleId, author, body) => {
       });
 }
 
-module.exports = {selectCommentsByArticleId, createComment};
+const deleteCommentById = (commentId) => {
+  console.log("In deleteCommentById() in comments.model!");
+
+  return db
+      .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`,
+          [commentId])
+      .then(({rows}) => {
+        if(!rows.length)
+          return Promise.reject({status: 404, msg: 'Resource not found!'});
+        else
+          return rows[0];
+      });
+};
+
+module.exports = {selectCommentsByArticleId, createComment, deleteCommentById};
