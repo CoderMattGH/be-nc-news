@@ -16,6 +16,8 @@ app.get('/api/articles', articlesController.getArticles);
 
 app.get('/api/articles/:article_id', articlesController.getArticleById);
 
+app.patch('/api/articles/:article_id', articlesController.patchArticleById);
+
 app.get('/api/articles/:article_id/comments', 
     commentsController.getCommentsByArticleId);
 
