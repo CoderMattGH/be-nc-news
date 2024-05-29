@@ -57,5 +57,18 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Creates a new comment for the specified article",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "body": "The comment body...",
+        "author": "user",
+        "votes": 0,
+        "created_at": "2024-05-29T15:09:41.214Z"
+      }
+    }
   }
 }
