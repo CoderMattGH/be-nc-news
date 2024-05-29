@@ -5,6 +5,7 @@ const apiController = require('./controllers/api.controller.js');
 const topicsController = require('./controllers/topics.controller.js');
 const articlesController = require('./controllers/articles.controller.js');
 const commentsController = require('./controllers/comments.controller.js');
+const usersController = require('./controllers/users.controller.js');
 
 app.use(express.json());
 
@@ -25,6 +26,8 @@ app.post('/api/articles/:article_id/comments',
     commentsController.postCommentByArticleId);
 
 app.delete('/api/comments/:comment_id', commentsController.deleteCommentById);
+
+app.get('/api/users', usersController.getAllUsers);
 
 // Handle psql errors
 app.use((err, req, res, next) => {
