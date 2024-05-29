@@ -24,6 +24,8 @@ app.get('/api/articles/:article_id/comments',
 app.post('/api/articles/:article_id/comments',
     commentsController.postCommentByArticleId);
 
+app.delete('/api/comments/:comment_id', commentsController.deleteCommentById);
+
 // Handle psql errors
 app.use((err, req, res, next) => {
   console.log("In psql error handler!");
