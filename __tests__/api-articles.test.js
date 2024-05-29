@@ -84,3 +84,92 @@ describe("GET /api/articles", () => {
         });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("Returns a 200 when given an extant article and valid request", () => {
+    const reqObj = {inc_votes: 10};
+
+    return request(app).patch('/api/articles/2').expect(200).send(reqObj)
+        .then(({body}) => {
+          const article = body.article;
+
+          expect(article).toMatchObject({
+            article_id: 2,
+            title: 'Sony Vaio; or, The Laptop',
+            topic: 'mitch',
+            author: 'icellusedkars',
+            body: expect.any(String),
+            created_at: '2020-10-16T05:03:00.000Z',
+            votes: 10,
+            article_img_url: expect.any(String)
+          });
+
+          // Expect article_img_url to be valid URL
+          expect(() => new URL(article.article_img_url)).not.toThrow(Error);
+  
+          // Expect created_at to be valid Date
+          expect(() => new Date(article.created_at)).not.toThrow(Error);
+        });
+  });
+
+  test("Vote count does not go below 0 when provided a negative vote", () => {
+    const reqObj = {inc_votes: -3000};
+
+    return request(app).patch('/api/articles/2').expect(200).send(reqObj)
+        .then(({body}) => {
+          const article = body.article;
+
+          expect(article.votes).toBeGreaterThanOrEqual(0);
+        });
+  });
+
+  test("Increments and does not replace current vote", () => {
+    const reqObj1 = {inc_votes: 12};
+    const reqObj2 = {inc_votes: 2};
+
+    const path = '/api/articles/3';
+
+    let votesAfterReq1 = 0;
+    let votesAfterReq2 = 0;
+
+    return request(app).patch(path).expect(200).send(reqObj1)
+        .then(({body}) => {
+          votesAfterReq1 = body.article.votes;
+
+          return request(app).patch(path).expect(200).send(reqObj2);
+        })
+        .then(({body}) => {
+          votesAfterReq2 = body.article.votes;
+
+          expect(votesAfterReq1).toBe(reqObj1.inc_votes);
+          expect(votesAfterReq2).toBe(reqObj1.inc_votes + reqObj2.inc_votes);
+        });
+  });
+
+  test("Returns a 404 when given an article that doesn't exist", () => {
+    const reqObj = {inc_votes: 2};
+
+    return request(app).patch('/api/articles/9999').expect(404).send(reqObj)
+        .then(({body}) => {
+          expect(body.msg).toBe("Resource not found!");
+        });
+  });
+
+  test("Returns a 400 when given an article that is not a number", () => {
+    const reqObj = {inc_votes: 2};
+
+    return request(app).patch('/api/articles/banana').expect(400).send(reqObj)
+        .then(({body}) => {
+          expect(body.msg).toBe("Bad request!");
+        });
+  });
+
+  test("Returns a 400 when given a bad request object", () => {
+    const reqObj = {invalid_key: 98};
+
+    return request(app).patch('/api/articles/2').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Bad request!");
+        });    
+  });
+});
