@@ -1,13 +1,31 @@
 const articlesModel = require('../models/articles.model.js');
+const miscService = require('../services/misc.service.js');
 
 const getArticles = (req, res, next) => {
   console.log("In getArticles() in articles.controller!");
 
-  articlesModel.selectArticles()
+  const topic = req.query.topic;
+
+  const promiseArr = [];
+
+  // If a topic is specified, check it exists.
+  if (topic) {
+    const checkValProm = miscService.checkValueExists('topics', 'slug', topic);
+    promiseArr.push(checkValProm);
+  }
+
+  const articlesProm = articlesModel.selectArticles(topic);
+  promiseArr.push(articlesProm);
+
+  Promise.all(promiseArr)
+      .then(() => {
+        return articlesProm;
+      })
       .then((articles) => {
         res.status(200).send({articles});
       })
       .catch((err) => {
+        console.log(err, '<--- err');
         next(err);
       });
 };
