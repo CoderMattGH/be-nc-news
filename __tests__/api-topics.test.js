@@ -12,15 +12,15 @@ afterAll(() => db.end());
 describe("GET /api/topics", () => {
   test("Returns an array of all the topics", () => {
     return request(app).get('/api/topics').expect(200)
-      .then(({body}) => {
-        const topics = body.topics;
+        .then(({body}) => {
+          const topics = body.topics;
 
-        topics.forEach((topic) => {
-          expect(topic).toMatchObject({
-            slug: expect.any(String),
-            description: expect.any(String)
+          topics.forEach((topic) => {
+            expect(topic).toMatchObject({
+              slug: expect.any(String),
+              description: expect.any(String)
+            });
           });
         });
-      });
   });
 });
