@@ -241,7 +241,7 @@ describe("GET /api/articles?topic=<topic_name>", () => {
   test("Returns the articles filtered by topic", () => {
     return request(app).get('/api/articles?topic=mitch').expect(200)
         .then(({body}) => {
-          const articles = body.articles;
+          const {articles} = body;
 
           expect(articles.length).toBe(4);
 
@@ -272,7 +272,7 @@ describe("GET /api/articles?topic=<topic_name>", () => {
   test("Returns a 200 when an extant topic but no existing articles", () => {
     return request(app).get('/api/articles?topic=paper').expect(200)
         .then(({body}) => {
-          const articles = body.articles;
+          const {articles} = body;
 
           expect(articles).toHaveLength(0);
         });
@@ -284,6 +284,51 @@ describe("GET /api/articles?topic=<topic_name>", () => {
           expect(body.msg).toBe('Resource not found!');
         });
   });
+});
+
+describe("GET /api/articles/?sort_by=<column>", () => {
+  test("Articles sorted by author defaulting to descending order", () => {
+    return request(app).get('/api/articles?sort_by=author').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(5);
+          expect(articles).toBeSorted({key: 'author', descending: true});
+        });
+  });
+
+  test("Articles sorted by comment_count defaulting to descending order", () => {
+    return request(app).get('/api/articles?sort_by=comment_count').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(5);
+          expect(articles).toBeSorted({key: 'comment_count', descending: true});
+        });
+  });
+
+  test("Articles sorted by column defaulting to descending order", () => {
+    const columnVals = ['author', 'title', 'article_id', 'topic', 'created_at', 
+        'votes', 'comment_count'];
+    
+    const promiseArr = [];
+
+    columnVals.forEach((columnName) => {
+      const path = `/api/articles?sort_by=${columnName}`
+
+      const promise = request(app).get(path).expect(200)
+          .then(({body}) => {
+            const {articles} = body;
+
+            expect(articles).toHaveLength(5);
+            expect(articles).toBeSorted({key: columnName, descending: true});
+          });
+      
+      promiseArr.push(promise);
+    });
+
+    return Promise.all(promiseArr);
+  });  
 });
 
 describe("PATCH /api/articles/:article_id", () => {
