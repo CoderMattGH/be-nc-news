@@ -98,10 +98,9 @@ initialise the application.
 
 ## Running the Application
 
-We should now be ready to run the application.  This can be achieved by running
- the following command:
+We should now be ready to run the application.  This can be achieved by executing:
 
- `npm run start`
+ `npm start`
 
  You should now see a prompt with:
 
@@ -111,16 +110,19 @@ We should now be ready to run the application.  This can be achieved by running
 
  You can now start interacting with the api by querying its endpoints.
 
- Its public endpoints will are displayed as a JSON object by sending a GET
-  request to: `http://localhost:9090/api` -- <i>assuming default port number and host address.</i>
+ Its public endpoints will be provided as a JSON object which you can view by sending 
+a GET request to: `http://localhost:9090/api` -- <i>assuming default port number and host address.</i>
 
-## Testing
+## Testing and Development
 
-In order to facilitate testing and development, we will need to initialise `husky`
-by running: 
+### Preparing the Environment
 
-`npm run prepare-dev`
+In order to facilitate testing and development, we need to initialise `husky` by running: 
+  
+  `npm run prepare-dev`
 
-We should be able to run any tests by executing the command:
+### Testing
 
-`npm run test`
+We should now be free to run the tests by executing:
+  
+`npm test`
