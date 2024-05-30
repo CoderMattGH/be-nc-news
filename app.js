@@ -7,7 +7,6 @@ const app = express();
 const apiRouter = require('./routes/api-router.js');
 
 const articlesController = require('./controllers/articles.controller.js');
-const commentsController = require('./controllers/comments.controller.js');
 
 app.use(express.json());
 
@@ -24,8 +23,6 @@ app.get('/api/articles/:article_id/comments',
 
 app.post('/api/articles/:article_id/comments',
     articlesController.postCommentByArticleId);
-
-app.delete('/api/comments/:comment_id', commentsController.deleteCommentById);
 
 // Handle psql errors
 app.use((err, req, res, next) => {
