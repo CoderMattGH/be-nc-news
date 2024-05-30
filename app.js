@@ -23,10 +23,10 @@ app.get('/api/articles/:article_id', articlesController.getArticleById);
 app.patch('/api/articles/:article_id', articlesController.patchArticleById);
 
 app.get('/api/articles/:article_id/comments', 
-    commentsController.getCommentsByArticleId);
+    articlesController.getCommentsByArticleId);
 
 app.post('/api/articles/:article_id/comments',
-    commentsController.postCommentByArticleId);
+    articlesController.postCommentByArticleId);
 
 app.delete('/api/comments/:comment_id', commentsController.deleteCommentById);
 
