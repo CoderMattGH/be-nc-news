@@ -7,3 +7,6 @@ require('dotenv').config({
 
 const logger = require('../logger/logger.js');
 logger.info("Parsed env file!");
+
+// Exports the current environment name, if required.
+module.exports = ENV;
