@@ -6,23 +6,9 @@ const app = express();
 
 const apiRouter = require('./routes/api-router.js');
 
-const articlesController = require('./controllers/articles.controller.js');
-
 app.use(express.json());
 
 app.use('/api', apiRouter);
-
-app.get('/api/articles', articlesController.getArticles);
-
-app.get('/api/articles/:article_id', articlesController.getArticleById);
-
-app.patch('/api/articles/:article_id', articlesController.patchArticleById);
-
-app.get('/api/articles/:article_id/comments', 
-    articlesController.getCommentsByArticleId);
-
-app.post('/api/articles/:article_id/comments',
-    articlesController.postCommentByArticleId);
 
 // Handle psql errors
 app.use((err, req, res, next) => {
