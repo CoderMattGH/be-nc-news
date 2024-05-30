@@ -45,4 +45,25 @@ const deleteCommentById = (commentId) => {
       });
 };
 
-module.exports = {selectCommentsByArticleId, createComment, deleteCommentById};
+const increaseVoteByCommentId = (commentId, incVotes) => {
+  logger.debug(`In increaseVoteByCommentId() in comments.model`);
+  logger.debug(`Changing vote count on comment where comment_id:${commentId}`
+      + ` with vote_increment:${incVotes}`);
+  
+  return db
+      .query(
+          `UPDATE comments 
+            SET votes = votes + $1 
+            WHERE comment_id = $2 
+            RETURNING *;`,
+          [incVotes, commentId])
+      .then(({rows}) => {
+        if (!rows.length)
+          return Promise.reject({status: 404, msg: "Resource not found!"});
+        else
+          return rows[0];
+      });
+};
+
+module.exports = {selectCommentsByArticleId, createComment, deleteCommentById,
+    increaseVoteByCommentId};
