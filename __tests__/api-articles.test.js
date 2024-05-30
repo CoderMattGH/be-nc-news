@@ -328,7 +328,86 @@ describe("GET /api/articles/?sort_by=<column>", () => {
     });
 
     return Promise.all(promiseArr);
+  });
+
+  test("Articles sorted by invalid column should return 400 status", () => {
+    return request(app).get('/api/articles/?sort_by=banana').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });
+  });
+});
+
+describe("GET /api/articles?order=<order>", () => {
+  test("Articles sorted in ascending order", () => {
+    return request(app).get('/api/articles?order=asc').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(5);
+          expect(articles).toBeSorted({key: 'created_at', descending: false});
+        });
+  });
+
+  test("Articles sorted in descending order", () => {
+    return request(app).get('/api/articles?order=desc').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(5);
+          expect(articles).toBeSorted({key: 'created_at', descending: true});
+        });
   });  
+
+  test("Articles sorted by invalid value should return 400 status", () => {
+    return request(app).get('/api/articles?order=banana').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });
+  });
+});
+
+describe("GET /api/articles with multiple queries", () => {
+  test("Articles should be sorted in ascending order by comment_count", () => {
+    return request(app).get('/api/articles?order=asc&sort_by=comment_count')
+        .expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(5);
+          expect(articles).toBeSorted({key: 'comment_count', descending: false});
+        });
+  });
+
+  test("Articles should be sorted in descending order by topic", () => {
+    return request(app).get('/api/articles?order=desc&sort_by=topic')
+        .expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(5);
+          expect(articles).toBeSorted({key: 'topic', descending: true});
+        });
+  });
+
+  test("Articles sorted in ascending order by author and filtered by topic", () => {
+    return request(app).get('/api/articles?order=asc&sort_by=author&topic=mitch')
+        .expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(4);
+          expect(articles).toBeSorted({key: 'author', descending: false});
+        });
+  });
+
+  test("Returns a 200 when given a invalid query in multi-query request", () => {
+    return request(app).get('/api/articles?order=desc&sort_by=invalid')
+        .expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });
+  });
 });
 
 describe("PATCH /api/articles/:article_id", () => {
