@@ -2,7 +2,7 @@
   "name": "be-nc-news",
   "version": "1.0.0",
   "description": "bc-nc-news",
-  "main": "index.js",
+  "main": "listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
@@ -27,7 +27,9 @@
     "jest-extended": "^2.0.0",
     "jest-sorted": "^1.0.15",
     "pg-format": "^1.0.4",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "start": "node listen.js",
+    "seed-prod": "NODE_ENV=production npm run seed"
   },
   "dependencies": {
     "dotenv": "^16.0.0",
