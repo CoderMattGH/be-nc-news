@@ -1,7 +1,7 @@
 const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
 
-const selectArticles = (topic, sortBy = 'created_at') => {
+const selectArticles = (topic, sortBy = 'created_at', order = 'desc') => {
   logger.debug("In selectArticles() in articles.model");
 
   let queryStr =
@@ -25,11 +25,17 @@ const selectArticles = (topic, sortBy = 'created_at') => {
     return Promise.reject({status: 400, msg: "Bad request!"});
   }
 
-  // queryStr += `ORDER BY articles.created_at DESC;`;
-  queryStr += `ORDER BY ${sortBy} DESC;`;
+  queryStr += `ORDER BY ${sortBy} `;
 
-  logger.info(`Selecting all articles from database `
-      + `${(topic) ? `where topic:${topic}` : ''} sort_by:${sortBy}`);
+  if (!['asc', 'desc'].includes(order)) {
+    return Promise.reject({status: 400, msg: "Bad request!"});
+  }
+
+  queryStr += `${order.toUpperCase()};`;
+
+  logger.info(`Selecting all articles from database where `
+      + `${(topic) ? `topic:${topic} ` : ''}` 
+      + `sort_by:${sortBy} order:${order}`);
 
   return db.query(queryStr, queryVals)
       .then(({rows: articles}) => {
