@@ -1,6 +1,7 @@
 const winston = require('winston');
 const {combine, timestamp, printf, colorize, align} = winston.format;
 
+// If LOGL env var not set, then default to 'error'
 const LOGL = process.env.LOGL || 'error';
 
 const logger = winston.createLogger({
@@ -13,5 +14,7 @@ const logger = winston.createLogger({
     ),
   transports: [new winston.transports.Console()]
 });
+
+logger.info(`Initialised logger!`);
 
 module.exports = logger;
