@@ -4,33 +4,11 @@ const logger = require('./logger/logger.js');
 const express = require('express');
 const app = express();
 
-const apiController = require('./controllers/api.controller.js');
-const topicsController = require('./controllers/topics.controller.js');
-const articlesController = require('./controllers/articles.controller.js');
-const commentsController = require('./controllers/comments.controller.js');
-const usersController = require('./controllers/users.controller.js');
+const apiRouter = require('./routes/api-router.js');
 
 app.use(express.json());
 
-app.get('/api', apiController.getEndpoints);
-
-app.get('/api/topics', topicsController.getTopics);
-
-app.get('/api/articles', articlesController.getArticles);
-
-app.get('/api/articles/:article_id', articlesController.getArticleById);
-
-app.patch('/api/articles/:article_id', articlesController.patchArticleById);
-
-app.get('/api/articles/:article_id/comments', 
-    articlesController.getCommentsByArticleId);
-
-app.post('/api/articles/:article_id/comments',
-    articlesController.postCommentByArticleId);
-
-app.delete('/api/comments/:comment_id', commentsController.deleteCommentById);
-
-app.get('/api/users', usersController.getAllUsers);
+app.use('/api', apiRouter);
 
 // Handle psql errors
 app.use((err, req, res, next) => {
