@@ -1,8 +1,8 @@
 const logger = require(`./logger/logger.js`);
 const app = require('./app.js');
 
-const PORT_NO = 9090;
+const { PORT = 9090 } = process.env;
 
-app.listen(PORT_NO, () => {
-  logger.info(`Successfully listening on port ${PORT_NO}`);
+app.listen(PORT, () => {
+  logger.info(`Successfully listening on port ${PORT}`);
 });
