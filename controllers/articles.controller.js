@@ -6,7 +6,8 @@ const miscService = require('../services/misc.service.js');
 const getArticles = (req, res, next) => {
   logger.debug(`In getArticles() in articles.controller`);
 
-  const topic = req.query.topic;
+  const {topic, sort_by: sortBy, order} = req.query;
+
   const promiseArr = [];
 
   // If a topic is specified, check it exists.
@@ -15,7 +16,7 @@ const getArticles = (req, res, next) => {
     promiseArr.push(checkValProm);
   }
 
-  const articlesProm = articlesModel.selectArticles(topic);
+  const articlesProm = articlesModel.selectArticles(topic, sortBy, order);
   promiseArr.push(articlesProm);
 
   Promise.all(promiseArr)
