@@ -125,12 +125,10 @@ describe("GET /api/articles?topic=<topic_name>", () => {
         });
   });
 
-  test("Returns a 200 OK when an extant topic but no existing articles", () => {
-    return request(app).get('/api/articles?topic=paper').expect(200)
+  test("Returns a 404 when an extant topic but no existing articles", () => {
+    return request(app).get('/api/articles?topic=paper').expect(404)
         .then(({body}) => {
-          const articles = body.articles;
-
-          expect(articles.length).toBe(0);
+          expect(body.msg).toBe('Resource not found!');
         });
   });
  
