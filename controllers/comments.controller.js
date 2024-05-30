@@ -17,4 +17,19 @@ const deleteCommentById = (req, res, next) => {
       });
 };
 
-module.exports = {deleteCommentById};
+const patchCommentById = (req, res, next) => {
+  logger.debug(`In patchCommentById() in comments.controller`);
+
+  const {comment_id: commentId} = req.params;
+  const {inc_votes: incVotes} = req.body;
+
+  commentsModel.increaseVoteByCommentId(commentId, incVotes)
+      .then((comment) => {
+        res.status(200).send({comment});
+      })
+      .catch((err) => {
+        next(err);
+      });
+};
+
+module.exports = {deleteCommentById, patchCommentById};
