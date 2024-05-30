@@ -14,7 +14,7 @@ describe("GET /api/articles:article_id", () => {
   test("Returns the correct article", () => {
     return request(app).get('/api/articles/2').expect(200)
         .then(({body}) => {
-          const article = body.article;
+          const {article} = body;
 
           expect(article).toMatchObject({
             article_id: 2,
@@ -62,7 +62,7 @@ describe("GET /api/articles/:article_id/comments", () => {
   test("Returns a comments array for the specified article", () => {
     return request(app).get('/api/articles/1/comments').expect(200)
         .then(({body}) => {
-          const comments = body.comments;
+          const {comments} = body;
 
           expect(comments.length).toBe(11);
 
@@ -206,7 +206,7 @@ describe("GET /api/articles", () => {
   test("Returns a valid articles array in descending order", () => {
     return request(app).get('/api/articles').expect(200)
         .then(({body}) => {
-          const articles = body.articles;
+          const {articles} = body;
           expect(articles).toHaveLength(5);
 
           // Sorted in descending order by created_at key
@@ -416,7 +416,7 @@ describe("PATCH /api/articles/:article_id", () => {
 
     return request(app).patch('/api/articles/2').expect(200).send(reqObj)
         .then(({body}) => {
-          const article = body.article;
+          const {article} = body;
 
           expect(article).toMatchObject({
             article_id: 2,
@@ -442,7 +442,7 @@ describe("PATCH /api/articles/:article_id", () => {
 
     return request(app).patch('/api/articles/2').expect(200).send(reqObj)
         .then(({body}) => {
-          const article = body.article;
+          const {article} = body;
 
           expect(article.votes).toBeGreaterThanOrEqual(0);
         });
