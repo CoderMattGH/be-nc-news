@@ -27,7 +27,10 @@ const selectArticles = (topic) => {
 
   return db.query(queryStr, queryVals)
       .then(({rows: articles}) => {
-        return articles;
+        if (!articles.length)
+          return Promise.reject({status: 404, msg:'Resource not found!'});
+        else
+          return articles;
       });
 };
 
