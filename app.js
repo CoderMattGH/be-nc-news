@@ -4,17 +4,14 @@ const logger = require('./logger/logger.js');
 const express = require('express');
 const app = express();
 
-const apiController = require('./controllers/api.controller.js');
-const topicsController = require('./controllers/topics.controller.js');
+const apiRouter = require('./routes/api-router.js');
+
 const articlesController = require('./controllers/articles.controller.js');
 const commentsController = require('./controllers/comments.controller.js');
-const usersController = require('./controllers/users.controller.js');
 
 app.use(express.json());
 
-app.get('/api', apiController.getEndpoints);
-
-app.get('/api/topics', topicsController.getTopics);
+app.use('/api', apiRouter);
 
 app.get('/api/articles', articlesController.getArticles);
 
@@ -29,8 +26,6 @@ app.post('/api/articles/:article_id/comments',
     articlesController.postCommentByArticleId);
 
 app.delete('/api/comments/:comment_id', commentsController.deleteCommentById);
-
-app.get('/api/users', usersController.getAllUsers);
 
 // Handle psql errors
 app.use((err, req, res, next) => {
