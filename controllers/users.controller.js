@@ -13,4 +13,18 @@ const getAllUsers = (req, res, next) => {
       });
 };
 
-module.exports = {getAllUsers};
+const getUser = (req, res, next) => {
+  logger.debug(`In getUser() in users.controller`);
+
+  const username = req.params.username;
+
+  usersModel.selectUserByUsername(username)
+      .then((user) => {
+        res.status(200).send({user});
+      })
+      .catch((err) => {
+        next(err);
+      });
+};
+
+module.exports = {getAllUsers, getUser};
