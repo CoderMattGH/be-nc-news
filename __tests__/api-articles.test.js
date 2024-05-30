@@ -269,10 +269,12 @@ describe("GET /api/articles?topic=<topic_name>", () => {
         });
   });
 
-  test("Returns a 404 when an extant topic but no existing articles", () => {
-    return request(app).get('/api/articles?topic=paper').expect(404)
+  test("Returns a 200 when an extant topic but no existing articles", () => {
+    return request(app).get('/api/articles?topic=paper').expect(200)
         .then(({body}) => {
-          expect(body.msg).toBe('Resource not found!');
+          const articles = body.articles;
+
+          expect(articles).toHaveLength(0);
         });
   });
  
