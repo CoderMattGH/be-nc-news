@@ -5,18 +5,34 @@
 Certain files will need to be created in the root directory of the application before it will run. 
 These are detailed below.
 
-### Development Environment
+### Environment Variables
 
-`.env.development` provides environment variables for the development environment.  
-You will need to set the `PGDATABASE` variable in this file which specifies the name of the 
-development psql database. For example: 
+The application makes use of certain environment variables.
 
-`PGDATABASE=nc_news`
+* `PGDATABASE` This sets the database name of the PostgresSQL that the application
+will connect to.
 
-### Testing Environment
+* `LOGL` This sets the logging level to use.  Available values are `'error'`, 
+`'info'`, and `'debug'`.
 
-`.env.test` provides environment variables for the testing environment.
-You will need to set the `PGDATABASE` variable in this file which specifies the name
-of the test psql database. For example:
+#### Development Environment File
 
-`PGDATABASE=nc_news_test`
+The file `.env.development` provides environment variables for the development environment.  
+
+Example `.env.development` file:
+
+```
+PGDATABASE=nc_news
+LOGL='debug'
+```
+
+#### Testing Environment File
+
+The file `.env.test` provides environment variables for the testing environment.  
+
+Example `.env.test` file:
+
+```
+PGDATABASE=nc_news_test
+LOGL='error'
+```
