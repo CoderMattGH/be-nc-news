@@ -27,7 +27,7 @@ const selectArticles = (topic) => {
 
   return db.query(queryStr, queryVals)
       .then(({rows: articles}) => {
-          return articles;
+        return articles;
       });
 };
 

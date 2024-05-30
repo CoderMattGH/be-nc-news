@@ -6,7 +6,6 @@ const getArticles = (req, res, next) => {
   logger.debug(`In getArticles() in articles.controller`);
 
   const topic = req.query.topic;
-
   const promiseArr = [];
 
   // If a topic is specified, check it exists.

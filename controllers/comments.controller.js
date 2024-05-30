@@ -53,7 +53,7 @@ const deleteCommentById = (req, res, next) => {
 
   const commentId = req.params.comment_id;
 
-  logger.debug(`Deleting comment where comment_id:${commentId}`);
+  logger.info(`Deleting comment where comment_id:${commentId}`);
 
   commentsModel.deleteCommentById(commentId)
       .then(() => {
