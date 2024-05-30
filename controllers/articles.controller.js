@@ -68,7 +68,7 @@ const patchArticleById = (req, res, next) => {
 };
 
 const getCommentsByArticleId = (req, res, next) => {
-  logger.debug(`In getCommentsByArticleId() in comments.controller`);
+  logger.debug(`In getCommentsByArticleId() in articles.controller`);
 
   const articleId = req.params.article_id;
 
@@ -88,7 +88,7 @@ const getCommentsByArticleId = (req, res, next) => {
 };
 
 const postCommentByArticleId = (req, res, next) => {
-  logger.debug(`In postCommentsByArticleId() in comments.controller`);
+  logger.debug(`In postCommentsByArticleId() in articles.controller`);
 
   const articleId = req.params.article_id;
   const {username, body} = req.body;
