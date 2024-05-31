@@ -70,7 +70,7 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "Serves the requested comments as a JSON object",
-    "queries": [],
+    "queries": ["limit", "p"],
     "exampleResponse": {
       "comments": [
         {

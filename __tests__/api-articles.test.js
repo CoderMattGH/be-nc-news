@@ -59,12 +59,12 @@ describe("GET /api/articles:article_id", () => {
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("Returns a comments array for the specified article", () => {
+  test("Returns a comments array for the specified article limited to 10", () => {
     return request(app).get('/api/articles/1/comments').expect(200)
         .then(({body}) => {
           const {comments} = body;
 
-          expect(comments.length).toBe(11);
+          expect(comments.length).toBe(10);
 
           // Check comments are ordered by 'created_at' in descending order
           expect(comments).toBeSorted({key: 'created_at', descending: true});
@@ -106,6 +106,78 @@ describe("GET /api/articles/:article_id/comments", () => {
               expect(body.comments).toHaveLength(0);
             });
       });
+});
+
+describe("GET /api/articles/:article_id/comments?limit=<limit>&p=<page>", () => {
+  test("Defaults to page 1 and returns number of comments by limit", () => {
+    return request(app).get('/api/articles/1/comments?limit=4').expect(200)
+        .then(({body}) => {
+          const {comments} = body; 
+
+          expect(comments).toHaveLength(4);
+          expect(comments[0].comment_id).toBe(5);
+          expect(comments[1].comment_id).toBe(2);
+          expect(comments[2].comment_id).toBe(18);
+          expect(comments[3].comment_id).toBe(13);
+        });
+  });
+
+  test("Returns the second page of comments", () => {
+    return request(app).get('/api/articles/1/comments?limit=4&p=2').expect(200)
+        .then(({body}) => {
+          const {comments} = body; 
+
+          expect(comments).toHaveLength(4);
+          expect(comments[0].comment_id).toBe(7);
+          expect(comments[1].comment_id).toBe(8);
+          expect(comments[2].comment_id).toBe(6);
+          expect(comments[3].comment_id).toBe(12);
+        });
+  });
+
+  test("Defaults to limit of 10", () => {
+    return request(app).get('/api/articles/1/comments?p=1').expect(200)
+        .then(({body}) => {
+          const {comments} = body; 
+
+          expect(comments).toHaveLength(10);
+        });    
+  });
+
+  test("A limit of 0 returns an empty array", () => {
+    return request(app).get('/api/articles/1/comments?limit=0').expect(200)
+        .then(({body}) => {
+          expect(body.comments).toHaveLength(0);
+        }); 
+  });  
+
+  test("A page number of 0 returns a 400 status", () => {
+    return request(app).get('/api/articles/1/comments?p=0').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        }); 
+  });
+
+  test("A negative limit returns a 400 status", () => {
+    return request(app).get('/api/articles/1/comments?limit=-1').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        }); 
+  });
+
+  test("Returns a 400 status when limit is not a number", () => {
+    return request(app).get('/api/articles/1/comments?limit=banana').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        }); 
+  });  
+
+  test("Returns a 400 status when page is not a number", () => {
+    return request(app).get('/api/articles/1/comments?p=banana').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        }); 
+  }); 
 });
 
 describe("POST /api/articles/:article_id/comments", () => {

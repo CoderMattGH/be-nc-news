@@ -14,7 +14,8 @@ app.use('/api', apiRouter);
 app.use((err, req, res, next) => {
   logger.debug("In psql error handler");
 
-  if(err.code === '22P02' || err.code === '23502')
+  if(err.code === '22P02' || err.code === '23502' || err.code === '2201X'
+      || err.code === '2201W')
     res.status(400).send({msg: 'Bad request!'})
   else if(err.code === '23503')   // Violates Foreign Key constraint
     res.status(404).send({msg: 'Resource not found!'})  

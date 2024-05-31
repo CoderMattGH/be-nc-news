@@ -1,14 +1,18 @@
 const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
 
-const selectCommentsByArticleId = (articleId) => {
+const selectCommentsByArticleId = (articleId, limit = 10, page = 1) => {
   logger.debug(`In selectCommentsByArticleId() in comments.model`);
-  logger.info(`Selecting comments from database where article_id:${articleId}`);
+  logger.info(`Selecting comments from database where article_id:${articleId} `
+      + `limit=${limit} page=${page}`);
 
-  return db
-      .query(
-          `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`, 
-          [articleId])
+  const queryStr = 
+      `SELECT * FROM comments 
+        WHERE article_id = $1 
+        ORDER BY created_at DESC 
+        LIMIT $2 OFFSET $3;`; 
+
+  return db.query(queryStr, [articleId, limit, (page - 1) * limit])
       .then(({rows: comments}) => {
         return comments;
       });
