@@ -773,3 +773,26 @@ describe("PATCH /api/articles/:article_id", () => {
         });    
   });
 });
+
+describe("DELETE /api/articles/:article_id", () => {
+  test("Returns with 204 and no content when given an extant article_id", () => {
+    return request(app).delete('/api/articles/2').expect(204)
+        .then(({body}) => {
+          expect(body).toEqual({});
+        });
+  });
+
+  test("Returns with a 400 when article_id is not a number", () => {
+    return request(app).delete('/api/articles/banana').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Bad request!");
+        });
+  });
+
+  test("Returns with a 404 when article_id does not exist", () => {
+    return request(app).delete('/api/articles/99999').expect(404)
+        .then(({body}) => {
+          expect(body.msg).toBe("Resource not found!");
+        });
+  });  
+});
