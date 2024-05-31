@@ -238,12 +238,17 @@ describe("GET /api/articles", () => {
 });
 
 describe("GET /api/articles?limit=<limit>&=<page>", () => {
-  test.only("Fetches 2 articles from the first page", () => {
+  test("Fetches 2 articles from the first page", () => {
     return request(app).get('/api/articles?limit=2&p=1').expect(200)
         .then(({body}) => {
           const {articles} = body;
 
           expect(articles).toHaveLength(2);
+
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(5);
+          });
+
           expect(articles[0].article_id).toBe(3);
           expect(articles[1].article_id).toBe(6);
         });
@@ -254,6 +259,10 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
         .then(({body}) => {
           const {articles} = body;
 
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(5);
+          });
+
           expect(articles).toHaveLength(1);
           expect(articles[0].article_id).toBe(5);
         });    
@@ -263,6 +272,10 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
     return request(app).get('/api/articles?p=1').expect(200)
         .then(({body}) => {
           const {articles} = body;
+
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(5);
+          });
 
           expect(articles).toHaveLength(5);
         });    
@@ -281,6 +294,10 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
     return request(app).get('/api/articles?limit=3&p=2').expect(200)
         .then(({body}) => {
           const {articles} = body;
+
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(5);
+          });
 
           expect(articles).toHaveLength(2);
           expect(articles[0].article_id).toBe(1);
@@ -301,6 +318,10 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
     return request(app).get('/api/articles?limit=3&p=1&topic=cats').expect(200)
         .then(({body}) => {
           const {articles} = body;
+          
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(1);
+          });
 
           expect(articles).toHaveLength(1);
           expect(articles[0].topic).toBe('cats');
