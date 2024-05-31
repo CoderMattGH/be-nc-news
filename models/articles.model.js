@@ -48,24 +48,26 @@ const createArticle = (author, title, body, topic, imgURL) => {
   logger.info(`Creating article where author:"${author}" title:"${title}" `
       + `body:"${body}" article_img_url:"${imgURL}"`);
 
-  const insertVals = [author, title, body, topic];
+  const valMap = new Map();
+  valMap.set('author', author);
+  valMap.set('title', title);
+  valMap.set('body', body);
+  valMap.set('topic', topic);
 
-  let queryStr = `INSERT INTO articles(author, title, body, topic`
+  if (imgURL)
+    valMap.set('article_img_url', imgURL);
 
-  if (imgURL) {
-    insertVals.push(imgURL);
-    queryStr += `, article_img_url`;
-  }
+  // Add $1, $2, $3, etc.
+  const countArr = [];
+  Array.from(valMap.keys())
+      .forEach((val, index) => countArr.push(`$${++index}`));
 
-  queryStr += `) VALUES($1, $2, $3, $4`
+  let queryStr = 
+      `INSERT INTO articles(${Array.from(valMap.keys()).join()}) 
+        VALUES(${countArr.join()})
+        RETURNING *;`;
 
-  if (imgURL) {
-    queryStr += `, $5`;
-  }
-
-  queryStr += `) RETURNING *;`;
-
-  return db.query(queryStr, insertVals).
+  return db.query(queryStr, Array.from(valMap.values())).
       then(({rows}) => {
         return rows[0];
       });
