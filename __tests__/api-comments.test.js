@@ -113,7 +113,7 @@ describe("PATCH /api/comments/:comment_id", () => {
   test("Returns a 400 status when given an invalid request object", () => {
     const reqObj = {inc_votes: 'banana'};
 
-    return request(app).patch('/api/comments/banana').send(reqObj).expect(400)
+    return request(app).patch('/api/comments/2').send(reqObj).expect(400)
         .then(({body}) => {
           expect(body.msg).toBe("Bad request!");
         });
@@ -122,7 +122,7 @@ describe("PATCH /api/comments/:comment_id", () => {
   test("Returns a 400 status when given an invalid request object", () => {
     const reqObj = {wrong_key: 'banana'};
 
-    return request(app).patch('/api/comments/banana').send(reqObj).expect(400)
+    return request(app).patch('/api/comments/1').send(reqObj).expect(400)
         .then(({body}) => {
           expect(body.msg).toBe("Bad request!");
         });
