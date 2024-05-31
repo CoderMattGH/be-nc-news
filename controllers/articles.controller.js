@@ -49,10 +49,25 @@ const postArticle = (req, res, next) => {
       });
 };
 
+const deleteArticle = (req, res, next) => {
+  logger.debug(`In deleteArticle in articles.controller`);
+
+  const {article_id: articleId} = req.params;
+
+  articlesModel.deleteArticleById(articleId)
+      .then(() => {
+          // Return an empty object
+          res.status(204).send();
+      })
+      .catch((err) => {
+        next(err);
+      });
+};
+
 const getArticleById = (req, res, next) => {
   logger.debug(`In getArticleById() in articles.controller`);
   
-  const articleId = req.params.article_id;
+  const {article_id: articleId} = req.params;
 
   logger.info(`Fetching article where article_id:${articleId}`);
 
@@ -134,4 +149,4 @@ const postCommentByArticleId = (req, res, next) => {
 };
 
 module.exports = {getArticles, getArticleById, patchArticleById, 
-    getCommentsByArticleId, postCommentByArticleId, postArticle};
+    getCommentsByArticleId, postCommentByArticleId, postArticle, deleteArticle};
