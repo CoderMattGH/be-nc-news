@@ -1,8 +1,8 @@
 const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
 
-const selectArticles = (topic, sortBy = 'created_at', order = 'desc',
-    limit = 10, page = 1) => {
+const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10, 
+    page = 1) => {
   logger.debug("In selectArticles() in articles.model");
 
   let queryStr =
