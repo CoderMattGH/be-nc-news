@@ -16,8 +16,8 @@ const getArticles = (req, res, next) => {
     promiseArr.push(checkValProm);
   }
 
-  const articlesProm = articlesModel.selectArticles(topic, sortBy, order, limit, 
-      page);
+  const articlesProm = 
+      articlesModel.selectArticles(topic, sortBy, order, limit, page);
   promiseArr.push(articlesProm);
 
   Promise.all(promiseArr)

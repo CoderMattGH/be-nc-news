@@ -40,7 +40,7 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
   queryVals.push(limit);
   queryVals.push(limit * (page - 1));
 
-    logger.info(`Selecting all articles from database where `
+  logger.info(`Selecting all articles from database where `
       + `${(topic) ? `topic:${topic} ` : ''}` 
       + `sort_by:${sortBy} order:${order} limit:${limit} page:${page}`);
 
