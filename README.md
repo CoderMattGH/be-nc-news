@@ -108,7 +108,7 @@ We should now be ready to run the application.  This can be achieved by executin
  Successfully listening on port 9090
  ```
 
- You can now start interacting with the api by querying its endpoints.
+ You can now start interacting with the API by querying its endpoints.
 
  Its public endpoints will be provided as a JSON object which you can view by sending 
 a GET request to: `http://localhost:9090/api` -- <i>assuming default port number and host address.</i>
