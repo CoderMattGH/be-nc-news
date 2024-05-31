@@ -43,6 +43,34 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc') => {
       });
 };
 
+const createArticle = (author, title, body, topic, imgURL) => {
+  logger.debug(`In createArticle() in articles.model`);
+  logger.info(`Creating article where author:"${author}" title:"${title}" `
+      + `body:"${body}" article_img_url:"${imgURL}"`);
+
+  const insertVals = [author, title, body, topic];
+
+  let queryStr = `INSERT INTO articles(author, title, body, topic`
+
+  if (imgURL) {
+    insertVals.push(imgURL);
+    queryStr += `, article_img_url`;
+  }
+
+  queryStr += `) VALUES($1, $2, $3, $4`
+
+  if (imgURL) {
+    queryStr += `, $5`;
+  }
+
+  queryStr += `) RETURNING *;`;
+
+  return db.query(queryStr, insertVals).
+      then(({rows}) => {
+        return rows[0];
+      });
+};
+
 const selectArticleById = (articleId) => {
   logger.debug("In selectArticleById() in articles.model");
 
@@ -90,4 +118,5 @@ const updateArticleVotesById = (articleId, voteIncrement) => {
       });
 };
 
-module.exports = {selectArticles, selectArticleById, updateArticleVotesById};
+module.exports = {selectArticles, selectArticleById, updateArticleVotesById,
+    createArticle};
