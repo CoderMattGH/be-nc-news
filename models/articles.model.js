@@ -43,6 +43,36 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc') => {
       });
 };
 
+const createArticle = (author, title, body, topic, imgURL) => {
+  logger.debug(`In createArticle() in articles.model`);
+  logger.info(`Creating article where author:"${author}" title:"${title}" `
+      + `body:"${body}" article_img_url:"${imgURL}"`);
+
+  const valMap = new Map();
+  valMap.set('author', author);
+  valMap.set('title', title);
+  valMap.set('body', body);
+  valMap.set('topic', topic);
+
+  if (imgURL)
+    valMap.set('article_img_url', imgURL);
+
+  // Add $1, $2, $3, etc.
+  const countArr = [];
+  Array.from(valMap.keys())
+      .forEach((val, index) => countArr.push(`$${++index}`));
+
+  let queryStr = 
+      `INSERT INTO articles(${Array.from(valMap.keys()).join()}) 
+        VALUES(${countArr.join()})
+        RETURNING *;`;
+
+  return db.query(queryStr, Array.from(valMap.values())).
+      then(({rows}) => {
+        return rows[0];
+      });
+};
+
 const selectArticleById = (articleId) => {
   logger.debug("In selectArticleById() in articles.model");
 
@@ -90,4 +120,5 @@ const updateArticleVotesById = (articleId, voteIncrement) => {
       });
 };
 
-module.exports = {selectArticles, selectArticleById, updateArticleVotesById};
+module.exports = {selectArticles, selectArticleById, updateArticleVotesById,
+    createArticle};

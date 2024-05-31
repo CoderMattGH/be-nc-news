@@ -237,6 +237,103 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("POST /api/articles", () => {
+  test("Successfully creates and returns the article", () => {
+    const articleObj = {
+      author: 'butter_bridge',
+      title: 'My Article Title',
+      body: 'This is an article about something.',
+      topic: 'cats',
+      article_img_url: 'http://www.myimg.com/image.jpg'
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(200)
+        .then(({body}) => {
+          const {article} = body;
+
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: articleObj.title,
+            body: articleObj.body,
+            topic: articleObj.topic,
+            article_img_url: articleObj.article_img_url,
+            comment_count: 0,
+            created_at: expect.any(String),
+            votes: 0
+          });
+
+          expect(() => {new Date(article.created_at)}).not.toThrow(Error);
+        });
+  });
+
+  test("Successfully generates a default article_img_url", () => {
+    const articleObj = {
+      author: 'butter_bridge',
+      title: 'My Article Title',
+      body: 'This is an article about something.',
+      topic: 'cats',
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(200)
+        .then(({body}) => {
+          const {article} = body;
+
+          expect(article.article_img_url).toBe(
+              'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg' 
+              + '?w=700&h=700');
+        });
+  });
+
+  test("Returns a 404 when given an unknown topic", () => {
+    const articleObj = {
+      author: 'butter_bridge',
+      title: 'My Article Title',
+      body: 'This is an article about something.',
+      topic: 'no_topic',
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(404)
+        .then(({body}) => {
+          expect(body.msg).toBe('Resource not found!');
+        });
+  });  
+
+  test("Returns a 404 when given an unknown user", () => {
+    const articleObj = {
+      author: 'no_user',
+      title: 'My Article Title',
+      body: 'This is an article about something.',
+      topic: 'cats',
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(404)
+        .then(({body}) => {
+          expect(body.msg).toBe('Resource not found!');
+        });
+  });    
+
+  test("Returns a 400 when given an invalid article object", () => {
+    const articleObj = {
+      author: 'butter_bridge',
+      title: 'My Article Title',
+      no_body: 'Wrong key for body',
+      topic: 'cats',
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });
+  }); 
+
+  test("Returns a 400 when not given an article object", () => {
+    return request(app).post('/api/articles').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });
+  });   
+});
+
 describe("GET /api/articles?topic=<topic_name>", () => {
   test("Returns the articles filtered by topic", () => {
     return request(app).get('/api/articles?topic=mitch').expect(200)
