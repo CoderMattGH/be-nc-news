@@ -89,14 +89,15 @@ const patchArticleById = (req, res, next) => {
 const getCommentsByArticleId = (req, res, next) => {
   logger.debug(`In getCommentsByArticleId() in articles.controller`);
 
-  const articleId = req.params.article_id;
-
+  const {limit, p: page} = req.query;
+  const {article_id: articleId} = req.params;
+  
   logger.info(`Getting comments where article_id:${articleId}`);
 
   // Check article_id exists
   miscService.checkValueExists('articles', 'article_id', articleId)
       .then(() => {
-        return commentsModel.selectCommentsByArticleId(articleId);        
+        return commentsModel.selectCommentsByArticleId(articleId, limit, page);
       })
       .then((comments) => {
         res.status(200).send({comments});  
