@@ -106,6 +106,21 @@ const selectArticleById = (articleId) => {
       });
 };
 
+const deleteArticleById = (articleId) => {
+  logger.debug(`In deleteArticleById in articles.model`);
+  logger.info(`Deleting article where article_id=${articleId}`);
+
+  return db
+      .query(`DELETE FROM articles WHERE article_id = $1 RETURNING *;`, 
+          [articleId])
+      .then(({rows}) => {
+        if (!rows.length)
+          return Promise.reject({status:404, msg:'Resource not found!'});
+        else 
+          return rows[0];
+      });
+};
+
 const updateArticleVotesById = (articleId, voteIncrement) => {
   logger.debug(`In updateArticleById() in articles.model`);
   logger.info(`Updating article in database where article_id:${articleId}`
@@ -128,4 +143,4 @@ const updateArticleVotesById = (articleId, voteIncrement) => {
 };
 
 module.exports = {selectArticles, selectArticleById, updateArticleVotesById,
-    createArticle};
+    createArticle, deleteArticleById};
