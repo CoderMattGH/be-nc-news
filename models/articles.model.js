@@ -1,13 +1,15 @@
 const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
 
-const selectArticles = (topic, sortBy = 'created_at', order = 'desc') => {
+const selectArticles = (topic, sortBy = 'created_at', order = 'desc',
+    limit = 10, page = 1) => {
   logger.debug("In selectArticles() in articles.model");
 
   let queryStr =
       `SELECT articles.author, articles.title, articles.article_id,
           articles.topic, articles.created_at, articles.votes, 
-          articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
+          articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count,
+          count(*) OVER()::INT AS total_count
         FROM comments
         JOIN articles ON comments.article_id = articles.article_id `;
 
@@ -31,11 +33,16 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc') => {
     return Promise.reject({status: 400, msg: "Bad request!"});
   }
 
-  queryStr += `${order.toUpperCase()};`;
+  queryStr += `${order.toUpperCase()} `;
+  
+  // Pagination
+  queryStr += `LIMIT $${queryVals.length + 1} OFFSET $${queryVals.length + 2};`
+  queryVals.push(limit);
+  queryVals.push(limit * (page - 1));
 
-  logger.info(`Selecting all articles from database where `
+    logger.info(`Selecting all articles from database where `
       + `${(topic) ? `topic:${topic} ` : ''}` 
-      + `sort_by:${sortBy} order:${order}`);
+      + `sort_by:${sortBy} order:${order} limit:${limit} page:${page}`);
 
   return db.query(queryStr, queryVals)
       .then(({rows: articles}) => {

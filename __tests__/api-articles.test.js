@@ -237,6 +237,112 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("GET /api/articles?limit=<limit>&=<page>", () => {
+  test("Fetches 2 articles from the first page", () => {
+    return request(app).get('/api/articles?limit=2&p=1').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(2);
+
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(5);
+          });
+
+          expect(articles[0].article_id).toBe(3);
+          expect(articles[1].article_id).toBe(6);
+        });
+  });
+
+  test("Returns articles starting from a page offset", () => {
+    return request(app).get('/api/articles?limit=1&p=3').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(5);
+          });
+
+          expect(articles).toHaveLength(1);
+          expect(articles[0].article_id).toBe(5);
+        });    
+  });
+
+  test("Default limit of 10", () => {
+    return request(app).get('/api/articles?p=1').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(5);
+          });
+
+          expect(articles).toHaveLength(5);
+        });    
+  });  
+
+  test("Default page of 1", () => {
+    return request(app).get('/api/articles?limit=10').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(5);
+        });        
+  });
+
+  test("Returns remaining articles when cannot fulfill max limit", () => {
+    return request(app).get('/api/articles?limit=3&p=2').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(5);
+          });
+
+          expect(articles).toHaveLength(2);
+          expect(articles[0].article_id).toBe(1);
+          expect(articles[1].article_id).toBe(9);
+        });    
+  });
+
+  test("Returns 200 with an empty articles array when exceeding page count", () => {
+    return request(app).get('/api/articles?limit=3&p=999').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles).toHaveLength(0);
+        });   
+  });
+
+  test("Handles multiple queries involving pagination", () => {
+    return request(app).get('/api/articles?limit=3&p=1&topic=cats').expect(200)
+        .then(({body}) => {
+          const {articles} = body;
+          
+          articles.forEach((article) => {
+            expect(article.total_count).toBe(1);
+          });
+
+          expect(articles).toHaveLength(1);
+          expect(articles[0].topic).toBe('cats');
+        });   
+  });    
+
+  test("Returns 400 when given a limit that is not a number", () => {
+    return request(app).get('/api/articles?limit=banana&p=1').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });   
+  });
+
+  test("Returns 400 when given a page that is not a number", () => {
+    return request(app).get('/api/articles?limit=2&p=banana').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });   
+  });  
+});
+
 describe("POST /api/articles", () => {
   test("Successfully creates and returns the article", () => {
     const articleObj = {
