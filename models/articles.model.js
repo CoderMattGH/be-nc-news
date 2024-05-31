@@ -8,7 +8,8 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc',
   let queryStr =
       `SELECT articles.author, articles.title, articles.article_id,
           articles.topic, articles.created_at, articles.votes, 
-          articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count
+          articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count,
+          count(*) OVER()::INT AS total_count
         FROM comments
         JOIN articles ON comments.article_id = articles.article_id `;
 
