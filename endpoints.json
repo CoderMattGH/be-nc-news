@@ -9,6 +9,14 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "POST /api/topics": {
+    "description": "Creates a new topic",
+    "queries": [],
+    "requestBody": {"slug": "Topic Name", "description": "Not required"},
+    "exampleResponse" : {
+      "topic":{"slug": "Topic Name", "description": "Not required"}
+    }
+  },
   "GET /api/articles": {
     "description": "Serves an array of all articles with pagination.",
     "queries": ["author", "topic", "sort_by", "order", "limit", "p"],

@@ -24,3 +24,44 @@ describe("GET /api/topics", () => {
         });
   });
 });
+
+describe("POST /api/topics", () => {
+  test("Inserts a new topic into the database", () => {
+    const topicObj = {slug: "A topic", description: "A topic description"};
+
+    return request(app).post('/api/topics').send(topicObj).expect(200)
+        .then(({body}) => {
+          const {topic} = body;
+
+          expect(topic).toMatchObject({
+            slug: 'A topic',
+            description: 'A topic description'
+          });
+        });
+  });
+
+  test("Doesn't overwrite an existing topic", () => {
+    const topicObj = {slug: "cats", description: "No overwrite"};
+
+    return request(app).post('/api/topics').send(topicObj).expect(409)
+        .then(({body}) => {
+          expect(body.msg).toBe('Resource already exists!');
+        });
+  });
+
+  test("Returns a 400 status with an invalid topic", () => {
+    const topicObj = {invalid: "new top", description: "No overwrite"};
+
+    return request(app).post('/api/topics').send(topicObj).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });
+  });  
+
+  test("Returns a 400 status with an empty topic", () => {
+    return request(app).post('/api/topics').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Bad request!');
+        });
+  });    
+});

@@ -13,4 +13,17 @@ const selectTopics = () => {
       });
 };
 
-module.exports = { selectTopics };
+const createTopic = (slug, description) => {
+  logger.debug(`In createTopic() in topics.model`);
+  logger.info(`Creating topic into database where slug:${slug} ` 
+      + `description:${description}`);
+
+  return db
+      .query(`INSERT INTO topics(slug, description) VALUES($1, $2) RETURNING *;`, 
+          [slug, description])
+      .then(({rows}) => {
+        return rows[0];
+      });
+};
+
+module.exports = {selectTopics, createTopic};
