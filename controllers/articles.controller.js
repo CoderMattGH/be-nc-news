@@ -31,6 +31,23 @@ const getArticles = (req, res, next) => {
       });
 };
 
+const postArticle = (req, res, next) => {
+  logger.debug(`In postArticle() in articles.controller`);
+
+  const {author, title, body, topic, article_img_url: imgURL} = req.body;
+
+  articlesModel.createArticle(author, title, body, topic, imgURL)
+      .then((article) => {
+        // Add comment_count property
+        article.comment_count = 0;
+
+        res.status(200).send({article});
+      })
+      .catch((err) => {
+        next(err);
+      });
+};
+
 const getArticleById = (req, res, next) => {
   logger.debug(`In getArticleById() in articles.controller`);
   
@@ -115,4 +132,4 @@ const postCommentByArticleId = (req, res, next) => {
 };
 
 module.exports = {getArticles, getArticleById, patchArticleById, 
-    getCommentsByArticleId, postCommentByArticleId};
+    getCommentsByArticleId, postCommentByArticleId, postArticle};
