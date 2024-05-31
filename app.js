@@ -14,7 +14,7 @@ app.use('/api', apiRouter);
 app.use((err, req, res, next) => {
   logger.debug("In psql error handler");
 
-  if(err.code === '22P02')
+  if(err.code === '22P02' || err.code === '23502')
     res.status(400).send({msg: 'Bad request!'})
   else
     next(err);
