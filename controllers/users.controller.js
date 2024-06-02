@@ -1,5 +1,6 @@
 const logger = require(`../logger/logger.js`);
 const usersModel = require('../models/users.model.js');
+const userValidator = require('../validators/user.validator.js');
 
 const getAllUsers = (req, res, next) => {
   logger.debug(`In getAllUsers() in users.controller`);
@@ -17,6 +18,14 @@ const getUser = (req, res, next) => {
   logger.debug(`In getUser() in users.controller`);
 
   const {username} = req.params;
+
+  // Validate username
+  const userValObj = userValidator.validateUsername(username);
+  if (!userValObj.valid) {
+    next({status: 400, msg: userValObj.msg});
+
+    return;
+  }
 
   usersModel.selectUserByUsername(username)
       .then((user) => {
