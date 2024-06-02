@@ -5,7 +5,8 @@ const selectUserByUsername = (username) => {
   logger.debug(`In selectUserByUsername() in users.model`);
   logger.info(`Selecting user from database where username:${username}`);
 
-  return db.query(`SELECT * FROM users WHERE username = $1`, [username])
+  return db
+      .query(`SELECT * FROM users WHERE LOWER(username) = LOWER($1)`, [username])
       .then(({rows}) => {
         const user = rows[0];
 
