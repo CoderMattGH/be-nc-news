@@ -4,7 +4,7 @@ const commentsModel = require('../models/comments.model.js');
 const deleteCommentById = (req, res, next) => {
   logger.debug(`In deleteCommentById() in comments.controller`);
 
-  const commentId = req.params.comment_id;
+  const {comment_id: commentId} = req.params;
 
   logger.info(`Deleting comment where comment_id:${commentId}`);
 

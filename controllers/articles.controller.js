@@ -83,13 +83,13 @@ const getArticleById = (req, res, next) => {
 const patchArticleById = (req, res, next) => {
   logger.debug(`In patchArticleById() in articles.controller`);
   
-  const articleId = req.params.article_id;
-  const voteIncrement = req.body.inc_votes;
+  const {article_id: articleId} = req.params;
+  const {inc_votes: voteIncrement} = req.body;
   
   logger.info(`Patching article where article_id:${articleId} with vote_inc:`
       + `${voteIncrement}`);
 
-  if(voteIncrement === undefined)
+  if(!voteIncrement)
     next({status: 400, msg: "Bad request!"});
 
   return articlesModel.updateArticleVotesById(articleId, voteIncrement)
@@ -125,7 +125,7 @@ const getCommentsByArticleId = (req, res, next) => {
 const postCommentByArticleId = (req, res, next) => {
   logger.debug(`In postCommentsByArticleId() in articles.controller`);
 
-  const articleId = req.params.article_id;
+  const {article_id: articleId} = req.params;
   const {username, body} = req.body;
 
   logger.info(`Posting comment where article_id:${articleId} and username:`

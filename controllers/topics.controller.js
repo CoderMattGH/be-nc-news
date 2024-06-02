@@ -13,7 +13,6 @@ const getTopics = (req, res, next) => {
       });
 };
 
-// RETURN 409 IF ALREADY EXISTS
 const postTopic = (req, res, next) => {
   logger.debug(`In postTopic() in topics.controller`);
 

@@ -16,7 +16,7 @@ const getAllUsers = (req, res, next) => {
 const getUser = (req, res, next) => {
   logger.debug(`In getUser() in users.controller`);
 
-  const username = req.params.username;
+  const {username} = req.params;
 
   usersModel.selectUserByUsername(username)
       .then((user) => {
