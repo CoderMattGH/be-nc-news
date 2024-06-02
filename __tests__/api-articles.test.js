@@ -676,7 +676,7 @@ describe("GET /api/articles with multiple queries", () => {
         });
   });
 
-  test("Returns a 200 when given a invalid query in multi-query request", () => {
+  test("Returns a 400 when given a invalid query in multi-query request", () => {
     return request(app).get('/api/articles?order=desc&sort_by=invalid')
         .expect(400)
         .then(({body}) => {
