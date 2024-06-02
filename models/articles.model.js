@@ -1,8 +1,28 @@
 const logger = require('../logger/logger.js');
+const miscService = require('../services/misc.service.js');
+const articleValidator = require('../validators/article.validator.js');
+const userValidator = require('../validators/user.validator.js');
+const topicValidator = require('../validators/topic.validator.js');
+const miscValidator = require('../validators/misc.validator.js');
 const db = require('../db/connection.js');
 
 const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10, 
     page = 1) => {
+
+  let checkTopicProm;
+  if (topic !== undefined) {
+    // Validate topic
+    const topValObj = topicValidator.validateSlug(topic);
+    if (!topValObj.valid) {
+      return Promise.reject({status: 400, msg: topValObj.msg});
+    }
+
+    // Check topic exists
+    checkTopicProm = miscService.checkValueExists('topics', 'slug', topic);
+  } else {
+    checkTopicProm = Promise.resolve();
+  }
+
   logger.debug("In selectArticles() in articles.model");
 
   let queryStr =
@@ -24,13 +44,13 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
   
   if (!['author', 'title', 'article_id', 'topic', 'created_at', 'votes', 
       'comment_count'].includes(sortBy)) {
-    return Promise.reject({status: 400, msg: "Bad request!"});
+    return Promise.reject({status: 400, msg: "Invalid sort_by value!"});
   }
 
   queryStr += `ORDER BY ${sortBy} `;
 
   if (!['asc', 'desc'].includes(order)) {
-    return Promise.reject({status: 400, msg: "Bad request!"});
+    return Promise.reject({status: 400, msg: "Invalid order value!"});
   }
 
   queryStr += `${order.toUpperCase()} `;
@@ -44,16 +64,51 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
       + `${(topic) ? `topic:${topic} ` : ''}` 
       + `sort_by:${sortBy} order:${order} limit:${limit} page:${page}`);
 
-  return db.query(queryStr, queryVals)
+  return checkTopicProm
+      .then(() => {
+        return db.query(queryStr, queryVals);
+      })
       .then(({rows: articles}) => {
         return articles;
-      });
+      });      
 };
 
 const createArticle = (author, title, body, topic, imgURL) => {
   logger.debug(`In createArticle() in articles.model`);
   logger.info(`Creating article where author:"${author}" title:"${title}" `
       + `body:"${body}" article_img_url:"${imgURL}"`);
+
+  // Validate author
+  authorValObj = userValidator.validateUsername(author);
+  if (!authorValObj.valid) {
+    return Promise.reject({status: 400, msg: authorValObj.msg});
+  }
+
+  // Validate title
+  titleValObj = articleValidator.validateTitle(title);
+  if (!titleValObj.valid) {
+    return Promise.reject({status: 400, msg: titleValObj.msg});
+  }
+
+  // Validate body
+  bodyValObj = articleValidator.validateBody(body);
+  if (!bodyValObj.valid) {
+    return Promise.reject({status: 400, msg: bodyValObj.msg});
+  }
+
+  // Validate topic
+  topicValObj = topicValidator.validateSlug(topic);
+  if (!topicValObj.valid) {
+    return Promise.reject({status: 400, msg: topicValObj.msg});
+  }
+
+  // Validate image URL if defined
+  if (imgURL !== undefined) {
+    imgValObj = articleValidator.validateImgURL(imgURL);
+    if (!imgValObj.valid) {
+      return Promise.reject({status: 400, msg: imgValObj.msg});
+    }
+  }
 
   const valMap = new Map();
   valMap.set('author', author);
@@ -85,6 +140,12 @@ const createArticle = (author, title, body, topic, imgURL) => {
 const selectArticleById = (articleId) => {
   logger.debug("In selectArticleById() in articles.model");
 
+  // Validate article ID
+  const idValObj = miscValidator.validateId(articleId);
+  if (!idValObj.valid) {
+    return Promise.reject({status: 400, msg: idValObj.msg});
+  }
+
   const queryStr = 
       `SELECT articles.article_id, articles.title, articles.topic,
           articles.author, articles.body, articles.created_at, articles.votes, 
@@ -102,7 +163,7 @@ const selectArticleById = (articleId) => {
         const article = rows[0];
 
         if (!article)
-          return Promise.reject({status: 404, msg: "Resource not found!"});
+          return Promise.reject({status: 404, msg: "Article not found!"});
         else 
           return article;
       });
@@ -112,6 +173,12 @@ const deleteArticleById = (articleId) => {
   logger.debug(`In deleteArticleById in articles.model`);
   logger.info(`Deleting article where article_id=${articleId}`);
 
+  // Validate article ID
+  const idValObj = miscValidator.validateId(articleId);
+  if (!idValObj.valid) {
+    return Promise.reject({status: 400, msg: idValObj.msg});
+  }
+
   return db
       .query(`DELETE FROM articles WHERE article_id = $1 RETURNING *;`, 
           [articleId])
@@ -119,7 +186,7 @@ const deleteArticleById = (articleId) => {
         const article = rows[0];
 
         if (!article)
-          return Promise.reject({status:404, msg:'Resource not found!'});
+          return Promise.reject({status:404, msg:'Article not found!'});
         else 
           return article;
       });
@@ -129,6 +196,18 @@ const updateArticleVotesById = (articleId, voteIncrement) => {
   logger.debug(`In updateArticleById() in articles.model`);
   logger.info(`Updating article in database where article_id:${articleId}`
       + ` with vote_increment:${voteIncrement}`);
+
+  // Validate article ID
+  const idValObj = miscValidator.validateId(articleId);
+  if (!idValObj.valid) {
+    return Promise.reject({status: 400, msg: idValObj.msg});
+  }
+
+  // Validate votes
+  const voteValObj = articleValidator.validateVote(voteIncrement);
+  if (!voteValObj.valid) {
+    return Promise.reject({status: 400, msg: voteValObj.msg});
+  }
 
   return db
       .query(
@@ -140,7 +219,7 @@ const updateArticleVotesById = (articleId, voteIncrement) => {
         const article = rows[0];
 
         if (!article)
-          return Promise.reject({status: 404, msg: "Resource not found!"});
+          return Promise.reject({status: 404, msg: "Article not found!"});
         else
           return article;
       });
