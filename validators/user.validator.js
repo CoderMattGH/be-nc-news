@@ -9,7 +9,7 @@ const validateUsername = (username) => {
   if (!username.trim().length)
     return {valid: false, msg: 'Username cannot be empty!'};
 
-  // Username should contain only numbers and letters
+  // Username should contain only numbers and letters and underscores
   const pattern = /^[a-z0-9_]+$/i;
   if (!pattern.test(username))
     return {valid: false, msg: 'Username contains invalid characters!'};
