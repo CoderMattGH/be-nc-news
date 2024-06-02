@@ -5,11 +5,11 @@ const selectTopics = () => {
   logger.debug(`In selectTopics() in topics.model`);
 
   return db.query(`SELECT * FROM topics`)
-      .then((topics) => {
-        if (!topics.rows.length)
+      .then(({rows: topics}) => {
+        if (!topics.length)
           return Promise.reject({status: 404, msg: 'Resource not found!'});
         else 
-          return topics.rows;
+          return topics;
       });
 };
 
@@ -22,7 +22,9 @@ const createTopic = (slug, description) => {
       .query(`INSERT INTO topics(slug, description) VALUES($1, $2) RETURNING *;`, 
           [slug, description])
       .then(({rows}) => {
-        return rows[0];
+        const topic = rows[0];
+
+        return topic;
       });
 };
 

@@ -7,10 +7,12 @@ const selectUserByUsername = (username) => {
 
   return db.query(`SELECT * FROM users WHERE username = $1`, [username])
       .then(({rows}) => {
-        if (!rows.length)
+        const user = rows[0];
+
+        if (!user)
           return Promise.reject({status: 404, msg: 'Resource not found!'});
         else
-          return rows[0];
+          return user;
       })
       .catch((err) => {
         return Promise.reject(err);

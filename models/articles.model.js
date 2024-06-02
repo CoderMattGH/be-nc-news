@@ -76,7 +76,9 @@ const createArticle = (author, title, body, topic, imgURL) => {
 
   return db.query(queryStr, Array.from(valMap.values())).
       then(({rows}) => {
-        return rows[0];
+        const article = rows[0];
+
+        return article;
       });
 };
 
@@ -114,10 +116,12 @@ const deleteArticleById = (articleId) => {
       .query(`DELETE FROM articles WHERE article_id = $1 RETURNING *;`, 
           [articleId])
       .then(({rows}) => {
-        if (!rows.length)
+        const article = rows[0];
+
+        if (!article)
           return Promise.reject({status:404, msg:'Resource not found!'});
         else 
-          return rows[0];
+          return article;
       });
 };
 
