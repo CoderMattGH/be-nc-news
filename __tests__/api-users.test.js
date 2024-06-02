@@ -52,4 +52,45 @@ describe("GET /api/users/:username", () => {
           expect(body.msg).toBe('Resource not found!');
         });
   });
+
+  test("Returns a 400 when the username contains invalid chars", () => {
+    return request(app).get('/api/users/334@').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Username contains invalid characters!');
+        });
+  });
+
+  test("Returns a 400 when the username is larger than 25 characters", () => {
+    let usernameLong = "";
+    for (let i = 0; i < 30; i++)
+      usernameLong += "U";
+
+    return request(app).get(`/api/users/${usernameLong}`).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Username cannot be longer than 25 characters!');
+        });
+  });  
+
+  test("Returns a 400 when the username contains spaces", () => {
+    return request(app).get('/api/users/hello user').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Username contains invalid characters!');
+        });
+  });  
+
+  test("Returns a 400 when the username is too short", () => {
+    return request(app).get('/api/users/ss').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Username cannot be shorter than 5 characters!');
+        });
+  });
+
+  test("Username search is case insensitive", () => {
+    return request(app).get('/api/users/BUTTER_BRIDGE').expect(200)
+        .then(({body}) => {
+          const {user} = body;
+
+          expect(user.username).toBe("butter_bridge");
+        });
+  });
 });

@@ -4,7 +4,7 @@ const commentsModel = require('../models/comments.model.js');
 const deleteCommentById = (req, res, next) => {
   logger.debug(`In deleteCommentById() in comments.controller`);
 
-  const {comment_id: commentId} = req.params;
+  const commentId = Number(req.params.comment_id);
 
   logger.info(`Deleting comment where comment_id:${commentId}`);
 
@@ -20,8 +20,8 @@ const deleteCommentById = (req, res, next) => {
 const patchCommentById = (req, res, next) => {
   logger.debug(`In patchCommentById() in comments.controller`);
 
-  const {comment_id: commentId} = req.params;
-  const {inc_votes: incVotes} = req.body;
+  let commentId = Number(req.params.comment_id);
+  let incVotes = Number(req.body.inc_votes);
 
   commentsModel.increaseVoteByCommentId(commentId, incVotes)
       .then((comment) => {

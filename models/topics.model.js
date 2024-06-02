@@ -1,5 +1,6 @@
 const logger = require('../logger/logger.js');
 const db = require('../db/connection.js');
+const topicValidator = require('../validators/topic.validator.js');
 
 const selectTopics = () => {
   logger.debug(`In selectTopics() in topics.model`);
@@ -17,6 +18,18 @@ const createTopic = (slug, description) => {
   logger.debug(`In createTopic() in topics.model`);
   logger.info(`Creating topic into database where slug:${slug} ` 
       + `description:${description}`);
+
+  // Validate slug
+  const slugValObj = topicValidator.validateSlug(slug);
+  if (!slugValObj.valid) {
+    return Promise.reject({status: 400, msg: slugValObj.msg});
+  }
+
+  // Validate description
+  const descValObj = topicValidator.validateDescription(description);
+  if (!descValObj.valid) {
+    return Promise.reject({status: 400, msg: descValObj.msg});
+  }
 
   return db
       .query(`INSERT INTO topics(slug, description) VALUES($1, $2) RETURNING *;`, 

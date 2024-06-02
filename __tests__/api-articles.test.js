@@ -46,14 +46,14 @@ describe("GET /api/articles:article_id", () => {
   test("Returns a 404 when article_id does not exist", () => {
     return request(app).get('/api/articles/99999').expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe('Resource not found!');
+          expect(body.msg).toBe('Article not found!');
         });
   });
 
   test("Returns a 400 when article_id is not a number", () => {
     return request(app).get('/api/articles/banana').expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('ID must be a number!');
         });
   });
 });
@@ -88,14 +88,14 @@ describe("GET /api/articles/:article_id/comments", () => {
   test("Returns a 404 when the article_id does not exist", () => {
     return request(app).get('/api/articles/9999/comments').expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe("Resource not found!");
+          expect(body.msg).toBe("Article_id not found!");
         });
   });
 
   test("Returns a 400 when the article_id is not a number", () => {
     return request(app).get('/api/articles/banana/comments').expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe("Bad request!");
+          expect(body.msg).toBe("ID must be a number!");
         });
   });
 
@@ -218,7 +218,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app).post('/api/articles/9999/comments').send(commentObj)
         .expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe('Resource not found!');
+          expect(body.msg).toBe('Article_id not found!');
         });
   });
 
@@ -231,7 +231,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app).post('/api/articles/2/comments').send(commentObj)
         .expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe('Resource not found!');
+          expect(body.msg).toBe('Username not found!');
         });
   });
 
@@ -244,7 +244,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app).post('/api/articles/banana/comments').send(commentObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('ID must be a number!');
         });
   });
 
@@ -256,7 +256,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app).post('/api/articles/banana/comments').send(commentObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('ID must be a number!');
         });
   });
 
@@ -269,7 +269,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app).post('/api/articles/banana/comments').send(commentObj)
         .expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('ID must be a number!');
         });
   });  
 });
@@ -307,6 +307,24 @@ describe("GET /api/articles", () => {
           });
         });
   });
+
+  test("Receive a 400 when topic has invalid characters", () => {
+    return request(app).get('/api/articles?topic=@$3').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Slug contains invalid characters!");
+        });
+  });
+
+  test("Receive a 400 when topic length is too long", () => {
+    let topicLong = "";
+    for(let i = 0; i < 35; i++)
+      topicLong += "L";
+
+    return request(app).get(`/api/articles?topic=${topicLong}`).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Slug cannot be longer than 30 characters!");
+        });
+  }); 
 });
 
 describe("GET /api/articles?limit=<limit>&=<page>", () => {
@@ -467,7 +485,7 @@ describe("POST /api/articles", () => {
       author: 'butter_bridge',
       title: 'My Article Title',
       body: 'This is an article about something.',
-      topic: 'no_topic',
+      topic: 'notopic',
     };
 
     return request(app).post('/api/articles').send(articleObj).expect(404)
@@ -500,16 +518,77 @@ describe("POST /api/articles", () => {
 
     return request(app).post('/api/articles').send(articleObj).expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('Body must be a string!');
         });
   }); 
+
+  test("Returns a 400 when given an invalid topic object", () => {
+    const articleObj = {
+      author: 'butter_bridge',
+      title: 'My Article Title',
+      body: 'A body',
+      topic: 'cats@@',
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Slug contains invalid characters!');
+        });
+  });   
+
+  test("Returns a 400 when given an invalid img URL", () => {
+    const articleObj = {
+      author: 'butter_bridge',
+      title: 'My Article Title',
+      body: 'A body',
+      topic: 'cats',
+      article_img_url: "::my^^image.com@@!/img.jpg"
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Image URL must be a valid URL!');
+        });
+  });   
+
+  test("Returns a 400 when given a body that is too long", () => {
+    let bodyLong = "";
+    for (let i = 0; i < 21000; i++)
+      bodyLong += "P";
+
+    const articleObj = {
+      author: 'butter_bridge',
+      title: 'My Article Title',
+      body: bodyLong,
+      topic: 'cats',
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Body cannot be longer than 20000 characters!');
+        });
+  });   
 
   test("Returns a 400 when not given an article object", () => {
     return request(app).post('/api/articles').expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('Username must be a string!');
         });
-  });   
+  });  
+  
+  test("Returns a 400 when title is not valid", () => {
+    const articleObj = {
+      author: 'butter_bridge',
+      title: "@@@",
+      no_body: 'Wrong key for body',
+      topic: 'cats',
+    };
+
+    return request(app).post('/api/articles').send(articleObj).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe('Title contains invalid characters!');
+        });
+  });  
 });
 
 describe("GET /api/articles?topic=<topic_name>", () => {
@@ -556,7 +635,7 @@ describe("GET /api/articles?topic=<topic_name>", () => {
   test("Returns a 404 when given a topic that does not exist", () => {
     return request(app).get('/api/articles?topic=banana').expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe('Resource not found!');
+          expect(body.msg).toBe('Slug not found!');
         });
   });
 });
@@ -608,7 +687,7 @@ describe("GET /api/articles/?sort_by=<column>", () => {
   test("Articles sorted by invalid column should return 400 status", () => {
     return request(app).get('/api/articles/?sort_by=banana').expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('Invalid sort_by value!');
         });
   });
 });
@@ -637,7 +716,7 @@ describe("GET /api/articles?order=<order>", () => {
   test("Articles sorted by invalid value should return 400 status", () => {
     return request(app).get('/api/articles?order=banana').expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('Invalid order value!');
         });
   });
 });
@@ -680,7 +759,7 @@ describe("GET /api/articles with multiple queries", () => {
     return request(app).get('/api/articles?order=desc&sort_by=invalid')
         .expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe('Bad request!');
+          expect(body.msg).toBe('Invalid sort_by value!');
         });
   });
 });
@@ -751,7 +830,7 @@ describe("PATCH /api/articles/:article_id", () => {
 
     return request(app).patch('/api/articles/9999').expect(404).send(reqObj)
         .then(({body}) => {
-          expect(body.msg).toBe("Resource not found!");
+          expect(body.msg).toBe("Article not found!");
         });
   });
 
@@ -760,7 +839,7 @@ describe("PATCH /api/articles/:article_id", () => {
 
     return request(app).patch('/api/articles/banana').expect(400).send(reqObj)
         .then(({body}) => {
-          expect(body.msg).toBe("Bad request!");
+          expect(body.msg).toBe("ID must be a number!");
         });
   });
 
@@ -785,14 +864,14 @@ describe("DELETE /api/articles/:article_id", () => {
   test("Returns with a 400 when article_id is not a number", () => {
     return request(app).delete('/api/articles/banana').expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe("Bad request!");
+          expect(body.msg).toBe("ID must be a number!");
         });
   });
 
   test("Returns with a 404 when article_id does not exist", () => {
     return request(app).delete('/api/articles/99999').expect(404)
         .then(({body}) => {
-          expect(body.msg).toBe("Resource not found!");
+          expect(body.msg).toBe("Article not found!");
         });
   });  
 });
