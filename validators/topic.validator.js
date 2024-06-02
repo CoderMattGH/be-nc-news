@@ -16,7 +16,7 @@ const validateSlug = (slug) => {
 
   // Slug should be a maximum length of 30 characters
   if (slug.length > 30)
-      return {valid: false, msg: 'Slug cannot be longer than 30 characters'};
+      return {valid: false, msg: 'Slug cannot be longer than 30 characters!'};
 
   return {valid: true};
 };
