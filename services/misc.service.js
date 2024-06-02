@@ -19,8 +19,10 @@ const checkValueExists = async (table, column, value) => {
 
   return db.query(queryStr, [value])
       .then(({rows}) => {
-        if (!rows.length)
-          return Promise.reject({status: 404, msg:'Resource not found!'});
+        if (!rows.length) {
+          const tempColName = column[0].toUpperCase() + column.slice(1);
+          return Promise.reject({status: 404, msg:`${tempColName} not found!`});
+        }
       });
 };
 
