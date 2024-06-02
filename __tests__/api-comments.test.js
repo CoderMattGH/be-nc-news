@@ -28,9 +28,23 @@ describe("DELETE /api/comments/:comment_id", () => {
   test("Returns a 400 when the comment_id is not a number", () => {
     return request(app).delete('/api/comments/banana').expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe("Bad request!");
+          expect(body.msg).toBe("ID must be a number!");
         });
   });
+
+  test("Returns a 400 when the comment_id is negative", () => {
+    return request(app).delete('/api/comments/-20').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("ID cannot be negative!");
+        });
+  });  
+
+  test("Returns a 400 when the comment_id is a float", () => {
+    return request(app).delete('/api/comments/22.2').expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("ID must be an integer!");
+        });
+  });    
 });
 
 describe("PATCH /api/comments/:comment_id", () => {
@@ -106,25 +120,43 @@ describe("PATCH /api/comments/:comment_id", () => {
 
     return request(app).patch('/api/comments/banana').send(reqObj).expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe("Bad request!");
+          expect(body.msg).toBe("ID must be a number!");
         });
   });
+
+  test("Returns a 400 status when given a comment_id that is negative", () => {
+    const reqObj = {inc_votes: -20};
+
+    return request(app).patch('/api/comments/-20').send(reqObj).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("ID cannot be negative!");
+        });
+  });  
 
   test("Returns a 400 status when given an invalid request object", () => {
     const reqObj = {inc_votes: 'banana'};
 
     return request(app).patch('/api/comments/2').send(reqObj).expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe("Bad request!");
+          expect(body.msg).toBe("Vote must be a number!");
         });
   });  
+
+  test("Returns a 400 status when votes is a float", () => {
+    const reqObj = {inc_votes: 22.2};
+
+    return request(app).patch('/api/comments/2').send(reqObj).expect(400)
+        .then(({body}) => {
+          expect(body.msg).toBe("Vote must be an integer!");
+        });
+  });    
 
   test("Returns a 400 status when given an invalid request object", () => {
     const reqObj = {wrong_key: 'banana'};
 
     return request(app).patch('/api/comments/1').send(reqObj).expect(400)
         .then(({body}) => {
-          expect(body.msg).toBe("Bad request!");
+          expect(body.msg).toBe("Vote must be a number!");
         });
   });    
 });
