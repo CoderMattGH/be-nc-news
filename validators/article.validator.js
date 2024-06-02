@@ -3,7 +3,7 @@ const logger = require('../logger/logger.js');
 const validateImgURL = (imgURL) => {
   logger.debug(`In validateImgURL in article.validator`);
 
-  if (!(typeof imgURL === 'string') || (imgURL instanceof String))
+  if (!((typeof imgURL === 'string') || (imgURL instanceof String)))
     return {valid: false, msg: 'Image URL must be a string!'};
 
   if (!imgURL.trim().length)
@@ -21,7 +21,7 @@ const validateImgURL = (imgURL) => {
 const validateTitle = (title) => {
   logger.debug(`In validateTitle in article.validator`);
 
-  if (!(typeof title === 'string') || (title instanceof String))
+  if (!((typeof title === 'string') || (title instanceof String)))
     return {valid: false, msg: 'Title must be a string!'};
 
   if (!title.trim().length)
@@ -46,7 +46,7 @@ const validateTitle = (title) => {
 const validateBody = (body) => {
   logger.debug(`In validateBody in article.validator`);
 
-  if ((typeof body !== 'string') || (!body instanceof String))
+  if (!((typeof body === 'string') || (body instanceof String)))
     return {valid: false, msg: 'Body must be a string!'};  
 
   if (!body.trim().length)
@@ -66,7 +66,7 @@ const validateBody = (body) => {
 const validateVote = (vote) => {
   logger.debug(`In validateVote in article.validator`);
 
-  if ((typeof vote !== 'number') || (!vote instanceof Number) || isNaN(vote))
+  if (!((typeof vote === 'number') || (vote instanceof Number)) || isNaN(vote))
     return {valid: false, msg: 'Vote must be a number!'};    
 
   if (!Number.isInteger(vote))
