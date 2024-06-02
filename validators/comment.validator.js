@@ -23,7 +23,7 @@ const validateBody = (body) => {
 const validateVote = (vote) => {
   logger.debug(`In validateVote in comment.validator`);
 
-  if ((typeof vote !== 'number') || (!vote instanceof Number))
+  if ((typeof vote !== 'number') || (!vote instanceof Number) || isNaN(vote))
     return {valid: false, msg: 'Vote must be a number!'};    
 
   if (!Number.isInteger(vote))
