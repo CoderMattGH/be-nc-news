@@ -42,7 +42,7 @@ describe("validateSlug()", () => {
       slugLong += "L";
 
     expect(topicValidator.validateSlug(slugLong)).toEqual(
-        {valid: false, msg: 'Slug cannot be longer than 30 characters'});
+        {valid: false, msg: 'Slug cannot be longer than 30 characters!'});
   });      
 
   test("Valid slug should return true", () => {
