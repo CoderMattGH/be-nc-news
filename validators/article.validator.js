@@ -63,4 +63,16 @@ const validateBody = (body) => {
   return {valid: true};
 };
 
-module.exports = {validateImgURL, validateTitle, validateBody};
+const validateVote = (vote) => {
+  logger.debug(`In validateVote in article.validator`);
+
+  if ((typeof vote !== 'number') || (!vote instanceof Number))
+    return {valid: false, msg: 'Vote must be a number!'};    
+
+  if (!Number.isInteger(vote))
+    return {valid: false, msg: 'Vote must be an integer!'};
+
+  return {valid: true};
+};
+
+module.exports = {validateImgURL, validateTitle, validateBody, validateVote};
