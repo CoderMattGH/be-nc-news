@@ -1,7 +1,9 @@
 const logger = require('../logger/logger.js');
 
 const validateImgURL = (imgURL) => {
-  if ((typeof imgURL !== 'string') || (!imgURL instanceof String))
+  logger.debug(`In validateImgURL in article.validator`);
+
+  if (!(typeof imgURL === 'string') || (imgURL instanceof String))
     return {valid: false, msg: 'Image URL must be a string!'};
 
   if (!imgURL.trim().length)
@@ -17,7 +19,9 @@ const validateImgURL = (imgURL) => {
 };
 
 const validateTitle = (title) => {
-  if ((typeof title !== 'string') || (!title instanceof String))
+  logger.debug(`In validateTitle in article.validator`);
+
+  if (!(typeof title === 'string') || (title instanceof String))
     return {valid: false, msg: 'Title must be a string!'};
 
   if (!title.trim().length)
@@ -40,6 +44,8 @@ const validateTitle = (title) => {
 };
 
 const validateBody = (body) => {
+  logger.debug(`In validateBody in article.validator`);
+
   if ((typeof body !== 'string') || (!body instanceof String))
     return {valid: false, msg: 'Body must be a string!'};  
 
