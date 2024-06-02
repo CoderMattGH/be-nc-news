@@ -113,3 +113,30 @@ describe("validateBody()", () => {
         {valid: true});
   });
 });
+
+describe("validateVote()", () => {
+  test("Vote cannot be undefined", () => {
+    expect(articleValidator.validateVote()).toEqual(
+        {valid: false, msg: 'Vote must be a number!'});
+  });
+
+  test("Vote must be a number", () => {
+    expect(articleValidator.validateVote("22")).toEqual(
+        {valid: false, msg: 'Vote must be a number!'});
+  });
+
+  test("Vote must be an integer", () => {
+    expect(articleValidator.validateVote(22.3)).toEqual(
+        {valid: false, msg: 'Vote must be an integer!'});
+  });  
+
+  test("A valid vote returns true", () => {
+    expect(articleValidator.validateVote(33)).toEqual(
+        {valid: true});
+  });  
+
+  test("A vote can be negative", () => {
+    expect(articleValidator.validateVote(-20)).toEqual(
+        {valid: true});
+  });
+});
