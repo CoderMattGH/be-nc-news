@@ -1,5 +1,5 @@
 const logger = require('../logger/logger.js');
-const miscService = require('../services/misc.service.js');
+const miscService = require('./misc.model.js');
 const articleValidator = require('../validators/article.validator.js');
 const userValidator = require('../validators/user.validator.js');
 const topicValidator = require('../validators/topic.validator.js');
