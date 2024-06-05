@@ -34,7 +34,7 @@ const postArticle = (req, res, next) => {
 };
 
 const deleteArticle = (req, res, next) => {
-  logger.debug(`In deleteArticle in articles.controller`);
+  logger.debug(`In deleteArticle() in articles.controller`);
 
   const articleId = Number(req.params.article_id);
 

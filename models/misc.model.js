@@ -11,7 +11,7 @@ const db = require('../db/connection.js');
  *    error object.
  */
 const checkValueExists = async (table, column, value) => {
-  logger.debug(`In checkValueExists() in misc.service`);
+  logger.debug(`In checkValueExists() in misc.model`);
   logger.info(`Checking value exists in database where table:${table} `
       + `column:${column} value:${value}`);
 
