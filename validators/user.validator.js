@@ -1,7 +1,7 @@
 const logger = require('../logger/logger.js');
 
 const validateUsername = (username) => {
-  logger.debug(`In validateUsername in user.validator`);
+  logger.debug(`In validateUsername() in user.validator`);
 
   if (!((typeof username === 'string') || (username instanceof String)))
     return {valid: false, msg: 'Username must be a string!'};
@@ -26,7 +26,7 @@ const validateUsername = (username) => {
 }; 
 
 const validateName = (name) => {
-  logger.debug(`In validateName in user.validator`);
+  logger.debug(`In validateName() in user.validator`);
 
   if (!((typeof name === 'string') || (name instanceof String)))
     return {valid: false, msg: 'Name must be a string!'};
@@ -54,7 +54,7 @@ const validateName = (name) => {
 };
 
 const validateAvatarURL = (avatarURL) => {
-  logger.debug('In validateAvatarURL in user.validator');
+  logger.debug('In validateAvatarURL() in user.validator');
 
   if (!((typeof avatarURL === 'string') || (avatarURL instanceof String)))
     return {valid: false, msg: 'Avatar URL must be a string!'};

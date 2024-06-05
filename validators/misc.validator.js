@@ -1,7 +1,7 @@
 const logger = require('../logger/logger.js');
 
 const validateId = (id) => {
-  logger.debug(`In validateId in misc.validator`);
+  logger.debug(`In validateId() in misc.validator`);
 
   if (!((typeof id === 'number') || (id instanceof Number)) || isNaN(id))
     return {valid: false, msg: 'ID must be a number!'};    

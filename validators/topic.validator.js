@@ -1,7 +1,7 @@
 const logger = require('../logger/logger.js');
 
 const validateSlug = (slug) => {
-  logger.debug(`In validateSlug in topic.validator`);
+  logger.debug(`In validateSlug() in topic.validator`);
 
   if (!((typeof slug === 'string') || (slug instanceof String)))
     return {valid: false, msg: 'Slug must be a string!'};
@@ -22,7 +22,7 @@ const validateSlug = (slug) => {
 };
 
 const validateDescription = (description) => {
-  logger.debug(`In validateDescription in topic.validator`);
+  logger.debug(`In validateDescription() in topic.validator`);
 
   if (!((typeof description === 'string') || (description instanceof String)))
     return {valid: false, msg: 'Description must be a string!'};
