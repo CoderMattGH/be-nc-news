@@ -8,6 +8,7 @@ const db = require('../db/connection.js');
 
 const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10, 
     page = 1) => {
+  logger.debug("In selectArticles() in articles.model");
 
   let checkTopicProm;
   if (topic !== undefined) {
@@ -22,8 +23,6 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
   } else {
     checkTopicProm = Promise.resolve();
   }
-
-  logger.debug("In selectArticles() in articles.model");
 
   let queryStr =
       `SELECT articles.author, articles.title, articles.article_id,
@@ -79,32 +78,32 @@ const createArticle = (author, title, body, topic, imgURL) => {
       + `body:"${body}" article_img_url:"${imgURL}"`);
 
   // Validate author
-  authorValObj = userValidator.validateUsername(author);
+  const authorValObj = userValidator.validateUsername(author);
   if (!authorValObj.valid) {
     return Promise.reject({status: 400, msg: authorValObj.msg});
   }
 
   // Validate title
-  titleValObj = articleValidator.validateTitle(title);
+  const titleValObj = articleValidator.validateTitle(title);
   if (!titleValObj.valid) {
     return Promise.reject({status: 400, msg: titleValObj.msg});
   }
 
   // Validate body
-  bodyValObj = articleValidator.validateBody(body);
+  const bodyValObj = articleValidator.validateBody(body);
   if (!bodyValObj.valid) {
     return Promise.reject({status: 400, msg: bodyValObj.msg});
   }
 
   // Validate topic
-  topicValObj = topicValidator.validateSlug(topic);
+  const topicValObj = topicValidator.validateSlug(topic);
   if (!topicValObj.valid) {
     return Promise.reject({status: 400, msg: topicValObj.msg});
   }
 
   // Validate image URL if defined
   if (imgURL !== undefined) {
-    imgValObj = articleValidator.validateImgURL(imgURL);
+    const imgValObj = articleValidator.validateImgURL(imgURL);
     if (!imgValObj.valid) {
       return Promise.reject({status: 400, msg: imgValObj.msg});
     }
@@ -170,7 +169,7 @@ const selectArticleById = (articleId) => {
 };
 
 const deleteArticleById = (articleId) => {
-  logger.debug(`In deleteArticleById in articles.model`);
+  logger.debug(`In deleteArticleById() in articles.model`);
   logger.info(`Deleting article where article_id=${articleId}`);
 
   // Validate article ID
