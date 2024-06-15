@@ -12,9 +12,8 @@ const selectCommentsByArticleId = (articleId, limit = 10, page = 1) => {
 
   // Validate article ID
   const idValObj = miscValidator.validateId(articleId);
-  if (!idValObj.valid) {
+  if (!idValObj.valid)
     return Promise.reject({status: 400, msg: idValObj.msg});
-  }
 
   const queryStr = 
       `SELECT * FROM comments 
@@ -38,21 +37,18 @@ const createComment = (articleId, author, body) => {
 
   // Validate article ID
   const idValObj = miscValidator.validateId(articleId);
-  if (!idValObj.valid) {
+  if (!idValObj.valid)
     return Promise.reject({status: 400, msg: idValObj.msg});
-  }
   
   // Validate author
   const userValObj = userValidator.validateUsername(author);
-  if (!userValObj.valid) {
+  if (!userValObj.valid)
     return Promise.reject({status: 400, msg: userValObj.msg});
-  }
 
   // Validate body
   const bodyValObj = commentValidator.validateBody(body);
-  if (!bodyValObj.valid) {
+  if (!bodyValObj.valid)
     return Promise.reject({status: 400, msg: bodyValObj});
-  }
 
   // Check article ID exists
   const artProm = miscService.checkValueExists('articles', 'article_id', articleId);
@@ -82,9 +78,8 @@ const deleteCommentById = (commentId) => {
 
   // Validate ID
   const idValObj = miscValidator.validateId(commentId);
-  if (!idValObj.valid) {
+  if (!idValObj.valid)
     return Promise.reject({status: 400, msg: idValObj.msg});
-  }  
 
   return db
       .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *;`,
@@ -106,15 +101,13 @@ const increaseVoteByCommentId = (commentId, incVotes) => {
   
   // Validate ID
   const idValObj = miscValidator.validateId(commentId);
-  if (!idValObj.valid) {
+  if (!idValObj.valid)
     return Promise.reject({status: 400, msg: idValObj.msg});
-  }
 
   // Validate votes
   const voteValObj = commentValidator.validateVote(incVotes);
-  if (!voteValObj.valid) {
+  if (!voteValObj.valid)
     return Promise.reject({status: 400, msg: voteValObj.msg});
-  }
 
   return db
       .query(

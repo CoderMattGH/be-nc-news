@@ -8,9 +8,8 @@ const selectUserByUsername = (username) => {
 
   // Validate username
   const userValObj = userValidator.validateUsername(username);
-  if (!userValObj.valid) {
+  if (!userValObj.valid)
     return Promise.reject({status: 400, msg: userValObj.msg});
-  }
 
   return db
       .query(`SELECT * FROM users WHERE LOWER(username) = LOWER($1)`, [username])

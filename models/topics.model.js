@@ -21,15 +21,13 @@ const createTopic = (slug, description) => {
 
   // Validate slug
   const slugValObj = topicValidator.validateSlug(slug);
-  if (!slugValObj.valid) {
+  if (!slugValObj.valid)
     return Promise.reject({status: 400, msg: slugValObj.msg});
-  }
 
   // Validate description
   const descValObj = topicValidator.validateDescription(description);
-  if (!descValObj.valid) {
+  if (!descValObj.valid)
     return Promise.reject({status: 400, msg: descValObj.msg});
-  }
 
   return db
       .query(`INSERT INTO topics(slug, description) VALUES($1, $2) RETURNING *;`, 

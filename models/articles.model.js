@@ -14,9 +14,8 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
   if (topic !== undefined) {
     // Validate topic
     const topValObj = topicValidator.validateSlug(topic);
-    if (!topValObj.valid) {
+    if (!topValObj.valid)
       return Promise.reject({status: 400, msg: topValObj.msg});
-    }
 
     // Check topic exists
     checkTopicProm = miscService.checkValueExists('topics', 'slug', topic);
@@ -48,9 +47,8 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
 
   queryStr += `ORDER BY ${sortBy} `;
 
-  if (!['asc', 'desc'].includes(order)) {
+  if (!['asc', 'desc'].includes(order))
     return Promise.reject({status: 400, msg: "Invalid order value!"});
-  }
 
   queryStr += `${order.toUpperCase()} `;
   
@@ -79,34 +77,29 @@ const createArticle = (author, title, body, topic, imgURL) => {
 
   // Validate author
   const authorValObj = userValidator.validateUsername(author);
-  if (!authorValObj.valid) {
+  if (!authorValObj.valid)
     return Promise.reject({status: 400, msg: authorValObj.msg});
-  }
 
   // Validate title
   const titleValObj = articleValidator.validateTitle(title);
-  if (!titleValObj.valid) {
+  if (!titleValObj.valid)
     return Promise.reject({status: 400, msg: titleValObj.msg});
-  }
 
   // Validate body
   const bodyValObj = articleValidator.validateBody(body);
-  if (!bodyValObj.valid) {
+  if (!bodyValObj.valid)
     return Promise.reject({status: 400, msg: bodyValObj.msg});
-  }
 
   // Validate topic
   const topicValObj = topicValidator.validateSlug(topic);
-  if (!topicValObj.valid) {
+  if (!topicValObj.valid)
     return Promise.reject({status: 400, msg: topicValObj.msg});
-  }
 
   // Validate image URL if defined
   if (imgURL !== undefined) {
     const imgValObj = articleValidator.validateImgURL(imgURL);
-    if (!imgValObj.valid) {
+    if (!imgValObj.valid)
       return Promise.reject({status: 400, msg: imgValObj.msg});
-    }
   }
 
   const valMap = new Map();
@@ -141,9 +134,8 @@ const selectArticleById = (articleId) => {
 
   // Validate article ID
   const idValObj = miscValidator.validateId(articleId);
-  if (!idValObj.valid) {
+  if (!idValObj.valid)
     return Promise.reject({status: 400, msg: idValObj.msg});
-  }
 
   const queryStr = 
       `SELECT articles.article_id, articles.title, articles.topic,
@@ -174,9 +166,8 @@ const deleteArticleById = (articleId) => {
 
   // Validate article ID
   const idValObj = miscValidator.validateId(articleId);
-  if (!idValObj.valid) {
+  if (!idValObj.valid)
     return Promise.reject({status: 400, msg: idValObj.msg});
-  }
 
   return db
       .query(`DELETE FROM articles WHERE article_id = $1 RETURNING *;`, 
@@ -198,15 +189,13 @@ const updateArticleVotesById = (articleId, voteIncrement) => {
 
   // Validate article ID
   const idValObj = miscValidator.validateId(articleId);
-  if (!idValObj.valid) {
+  if (!idValObj.valid)
     return Promise.reject({status: 400, msg: idValObj.msg});
-  }
 
   // Validate votes
   const voteValObj = articleValidator.validateVote(voteIncrement);
-  if (!voteValObj.valid) {
+  if (!voteValObj.valid)
     return Promise.reject({status: 400, msg: voteValObj.msg});
-  }
 
   return db
       .query(
