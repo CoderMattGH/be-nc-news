@@ -26,6 +26,7 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
   let queryStr =
       `SELECT articles.author, articles.title, articles.article_id,
           articles.topic, articles.created_at, articles.votes, 
+          substring(articles.body, 1, 420) AS body_preview,
           articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count,
           count(*) OVER()::INT AS total_count
         FROM comments
