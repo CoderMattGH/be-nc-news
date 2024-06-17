@@ -1,3 +1,4 @@
+require('./env-parser/env-parser.js');
 const logger = require(`./logger/logger.js`);
 const app = require('./app.js');
 
