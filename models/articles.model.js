@@ -53,6 +53,9 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
 
   queryStr += `${order.toUpperCase()} `;
   
+  // If a tie, resolve by article_id
+  queryStr += `, articles.article_id ASC `
+
   // Pagination
   queryStr += `LIMIT $${queryVals.length + 1} OFFSET $${queryVals.length + 2};`
   queryVals.push(limit);
