@@ -7,7 +7,7 @@ const miscValidator = require('../validators/misc.validator.js');
 const db = require('../db/connection.js');
 
 const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10, 
-    page = 1) => {
+    page = 1, search = "") => {
   logger.debug("In selectArticles() in articles.model");
 
   let checkTopicProm;
@@ -30,7 +30,7 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
           articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count,
           count(*) OVER()::INT AS total_count
         FROM comments
-        JOIN articles ON comments.article_id = articles.article_id `;
+        RIGHT JOIN articles ON comments.article_id = articles.article_id `;
 
   const queryVals = [];
 
@@ -38,6 +38,17 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
     queryVals.push(topic);
     queryStr += `WHERE articles.topic = $1 `;
   }
+
+  // Add search TODO:
+  console.log(search);
+
+  if (topic)
+    queryStr += 'AND ';
+  else
+    queryStr += 'WHERE ';
+
+  queryStr += 
+      `(articles.title ILIKE '%${search}%' OR articles.body ILIKE '%${search}%') `
 
   queryStr += `GROUP BY articles.article_id `; 
   
@@ -63,7 +74,10 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
 
   logger.info(`Selecting all articles from database where `
       + `${(topic) ? `topic:${topic} ` : ''}` 
-      + `sort_by:${sortBy} order:${order} limit:${limit} page:${page}`);
+      + `sort_by:${sortBy} order:${order} limit:${limit} page:${page} ` 
+      + `search:'${search}'`);
+
+  logger.debug(`QueryString: ${queryStr}`);
 
   return checkTopicProm
       .then(() => {
@@ -73,6 +87,81 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
         return articles;
       });      
 };
+
+
+
+
+// const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10, 
+//     page = 1) => {
+//   logger.debug("In selectArticles() in articles.model");
+
+//   let checkTopicProm;
+//   if (topic !== undefined) {
+//     // Validate topic
+//     const topValObj = topicValidator.validateSlug(topic);
+//     if (!topValObj.valid)
+//       return Promise.reject({status: 400, msg: topValObj.msg});
+
+//     // Check topic exists
+//     checkTopicProm = miscService.checkValueExists('topics', 'slug', topic);
+//   } else {
+//     checkTopicProm = Promise.resolve();
+//   }
+
+//   let queryStr =
+//       `SELECT articles.author, articles.title, articles.article_id,
+//           articles.topic, articles.created_at, articles.votes, 
+//           substring(articles.body, 1, 420) AS body_preview,
+//           articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count,
+//           count(*) OVER()::INT AS total_count
+//         FROM comments
+//         JOIN articles ON comments.article_id = articles.article_id `;
+
+//   const queryVals = [];
+
+//   if (topic) {
+//     queryVals.push(topic);
+//     queryStr += `WHERE articles.topic = $1 `;
+//   }
+
+//   queryStr += `GROUP BY articles.article_id `; 
+  
+//   if (!['author', 'title', 'article_id', 'topic', 'created_at', 'votes', 
+//       'comment_count'].includes(sortBy)) {
+//     return Promise.reject({status: 400, msg: "Invalid sort_by value!"});
+//   }
+
+//   queryStr += `ORDER BY ${sortBy} `;
+
+//   if (!['asc', 'desc'].includes(order))
+//     return Promise.reject({status: 400, msg: "Invalid order value!"});
+
+//   queryStr += `${order.toUpperCase()} `;
+  
+//   // If a tie, resolve by article_id
+//   queryStr += `, articles.article_id ASC `
+
+//   // Pagination
+//   queryStr += `LIMIT $${queryVals.length + 1} OFFSET $${queryVals.length + 2};`
+//   queryVals.push(limit);
+//   queryVals.push(limit * (page - 1));
+
+//   logger.info(`Selecting all articles from database where `
+//       + `${(topic) ? `topic:${topic} ` : ''}` 
+//       + `sort_by:${sortBy} order:${order} limit:${limit} page:${page}`);
+
+//   return checkTopicProm
+//       .then(() => {
+//         return db.query(queryStr, queryVals);
+//       })
+//       .then(({rows: articles}) => {
+//         return articles;
+//       });      
+// };
+
+
+
+
 
 const createArticle = (author, title, body, topic, imgURL) => {
   logger.debug(`In createArticle() in articles.model`);
