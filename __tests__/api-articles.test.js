@@ -877,8 +877,16 @@ describe("DELETE /api/articles/:article_id", () => {
   });  
 });
 
-// MATT
 describe("GET /api/articles?search=<search-term>", () => {
+  test("Fetches all articles when given an empty search query", () => {
+    return request(app).get('/api/articles?search=')
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles.length).toBe(10);
+        });
+  });
+
   test("Fetches all articles which contain the 1 word search query", () => {
     return request(app).get('/api/articles?search=mitch')
         .then(({body}) => {
@@ -889,7 +897,7 @@ describe("GET /api/articles?search=<search-term>", () => {
         });
   });
 
-  test("Fetches all articles which contain the 1 word search query", () => {
+  test("Fetches all articles which contain a multiple word search query", () => {
     return request(app).get('/api/articles?search=Eight+pug+gifs')
         .then(({body}) => {
           const {articles} = body;
@@ -899,12 +907,14 @@ describe("GET /api/articles?search=<search-term>", () => {
         });
   });
 
-  test("Fetches all articles when given an empty search query", () => {
-    return request(app).get('/api/articles?search=')
-        .then(({body}) => {
-          const {articles} = body;
+  // TODO: Future implementation of search
+  xtest("Order of string tokens doesn't matter", () => {
+    return request(app).get('/api/articles?search=pug+Eight+gifs')
+      .then(({body}) => {
+        const {articles} = body;
 
-          expect(articles.length).toBe(10);
-        });
+        expect(articles.length).toBe(1);
+        expect(articles[0].article_id).toBe(3);
+      });
   });
 });
