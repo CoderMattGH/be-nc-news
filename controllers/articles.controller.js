@@ -2,12 +2,26 @@ const logger = require('../logger/logger.js');
 const articlesModel = require('../models/articles.model.js');
 const commentsModel = require('../models/comments.model.js');
 
+// const getArticles = (req, res, next) => {
+//   logger.debug(`In getArticles() in articles.controller`);
+
+//   const {topic, sort_by: sortBy, order, limit, p: page} = req.query;
+
+//   articlesModel.selectArticles(topic, sortBy, order, limit, page)
+//       .then((articles) => {
+//         res.status(200).send({articles});
+//       })
+//       .catch((err) => {
+//         next(err);
+//       });
+// };
+
 const getArticles = (req, res, next) => {
   logger.debug(`In getArticles() in articles.controller`);
 
-  const {topic, sort_by: sortBy, order, limit, p: page} = req.query;
+  const {topic, sort_by: sortBy, order, limit, p: page, search} = req.query;
 
-  articlesModel.selectArticles(topic, sortBy, order, limit, page)
+  articlesModel.selectArticles(topic, sortBy, order, limit, page, search)
       .then((articles) => {
         res.status(200).send({articles});
       })
