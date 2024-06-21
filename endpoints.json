@@ -19,7 +19,7 @@
   },
   "GET /api/articles": {
     "description": "Serves an array of all articles with pagination.",
-    "queries": ["topic", "sort_by", "order", "limit", "p"],
+    "queries": ["topic", "sort_by", "order", "limit", "p", "search"],
     "exampleResponse": {
       "articles": [
         {
