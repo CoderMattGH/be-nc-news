@@ -279,7 +279,8 @@ describe("GET /api/articles", () => {
     return request(app).get('/api/articles').expect(200)
         .then(({body}) => {
           const {articles} = body;
-          expect(articles).toHaveLength(5);
+          console.log(articles);
+          expect(articles).toHaveLength(10);
 
           // Sorted in descending order by created_at key
           expect(articles).toBeSorted({key: 'created_at', descending: true});
@@ -336,7 +337,7 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
           expect(articles).toHaveLength(2);
 
           articles.forEach((article) => {
-            expect(article.total_count).toBe(5);
+            expect(article.total_count).toBe(13);
           });
 
           expect(articles[0].article_id).toBe(3);
@@ -350,11 +351,11 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
           const {articles} = body;
 
           articles.forEach((article) => {
-            expect(article.total_count).toBe(5);
+            expect(article.total_count).toBe(13);
           });
 
           expect(articles).toHaveLength(1);
-          expect(articles[0].article_id).toBe(5);
+          expect(articles[0].article_id).toBe(2);
         });    
   });
 
@@ -364,10 +365,10 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
           const {articles} = body;
 
           articles.forEach((article) => {
-            expect(article.total_count).toBe(5);
+            expect(article.total_count).toBe(13);
           });
 
-          expect(articles).toHaveLength(5);
+          expect(articles).toHaveLength(10);
         });    
   });  
 
@@ -376,7 +377,7 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles).toHaveLength(5);
+          expect(articles).toHaveLength(10);
         });        
   });
 
@@ -386,12 +387,12 @@ describe("GET /api/articles?limit=<limit>&=<page>", () => {
           const {articles} = body;
 
           articles.forEach((article) => {
-            expect(article.total_count).toBe(5);
+            expect(article.total_count).toBe(13);
           });
 
-          expect(articles).toHaveLength(2);
-          expect(articles[0].article_id).toBe(1);
-          expect(articles[1].article_id).toBe(9);
+          expect(articles).toHaveLength(3);
+          expect(articles[0].article_id).toBe(12);
+          expect(articles[1].article_id).toBe(13);
         });    
   });
 
@@ -597,7 +598,7 @@ describe("GET /api/articles?topic=<topic_name>", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles.length).toBe(4);
+          expect(articles.length).toBe(10);
 
           articles.forEach((article) => {
             expect(article).toMatchObject({
@@ -646,7 +647,7 @@ describe("GET /api/articles/?sort_by=<column>", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles).toHaveLength(5);
+          expect(articles).toHaveLength(10);
           expect(articles).toBeSorted({key: 'author', descending: true});
         });
   });
@@ -656,7 +657,7 @@ describe("GET /api/articles/?sort_by=<column>", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles).toHaveLength(5);
+          expect(articles).toHaveLength(10);
           expect(articles).toBeSorted({key: 'comment_count', descending: true});
         });
   });
@@ -674,7 +675,7 @@ describe("GET /api/articles/?sort_by=<column>", () => {
           .then(({body}) => {
             const {articles} = body;
 
-            expect(articles).toHaveLength(5);
+            expect(articles).toHaveLength(10);
             expect(articles).toBeSorted({key: columnName, descending: true});
           });
       
@@ -698,7 +699,7 @@ describe("GET /api/articles?order=<order>", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles).toHaveLength(5);
+          expect(articles).toHaveLength(10);
           expect(articles).toBeSorted({key: 'created_at', descending: false});
         });
   });
@@ -708,7 +709,7 @@ describe("GET /api/articles?order=<order>", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles).toHaveLength(5);
+          expect(articles).toHaveLength(10);
           expect(articles).toBeSorted({key: 'created_at', descending: true});
         });
   });  
@@ -728,7 +729,7 @@ describe("GET /api/articles with multiple queries", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles).toHaveLength(5);
+          expect(articles).toHaveLength(10);
           expect(articles).toBeSorted({key: 'comment_count', descending: false});
         });
   });
@@ -739,7 +740,7 @@ describe("GET /api/articles with multiple queries", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles).toHaveLength(5);
+          expect(articles).toHaveLength(10);
           expect(articles).toBeSorted({key: 'topic', descending: true});
         });
   });
@@ -750,7 +751,7 @@ describe("GET /api/articles with multiple queries", () => {
         .then(({body}) => {
           const {articles} = body;
 
-          expect(articles).toHaveLength(4);
+          expect(articles).toHaveLength(10);
           expect(articles).toBeSorted({key: 'author', descending: false});
         });
   });
@@ -874,4 +875,36 @@ describe("DELETE /api/articles/:article_id", () => {
           expect(body.msg).toBe("Article not found!");
         });
   });  
+});
+
+// MATT
+describe("GET /api/articles?search=<search-term>", () => {
+  test("Fetches all articles which contain the 1 word search query", () => {
+    return request(app).get('/api/articles?search=mitch')
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles.length).toBe(6);
+          expect(articles[0].article_id).toBe(3);
+        });
+  });
+
+  test("Fetches all articles which contain the 1 word search query", () => {
+    return request(app).get('/api/articles?search=Eight+pug+gifs')
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles.length).toBe(1);
+          expect(articles[0].article_id).toBe(3);
+        });
+  });
+
+  test("Fetches all articles when given an empty search query", () => {
+    return request(app).get('/api/articles?search=')
+        .then(({body}) => {
+          const {articles} = body;
+
+          expect(articles.length).toBe(10);
+        });
+  });
 });
