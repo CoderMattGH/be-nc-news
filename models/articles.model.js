@@ -7,8 +7,10 @@ const miscValidator = require('../validators/misc.validator.js');
 const db = require('../db/connection.js');
 
 const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10, 
-    page = 1) => {
+    page = 1, search = "") => {
   logger.debug("In selectArticles() in articles.model");
+
+  search = search.trim();
 
   let checkTopicProm;
   if (topic !== undefined) {
@@ -30,7 +32,7 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
           articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count,
           count(*) OVER()::INT AS total_count
         FROM comments
-        JOIN articles ON comments.article_id = articles.article_id `;
+        RIGHT JOIN articles ON comments.article_id = articles.article_id `;
 
   const queryVals = [];
 
@@ -38,6 +40,16 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
     queryVals.push(topic);
     queryStr += `WHERE articles.topic = $1 `;
   }
+
+  if (topic)
+    queryStr += 'AND ';
+  else
+    queryStr += 'WHERE ';
+
+  queryStr += 
+      `(articles.title ILIKE $${queryVals.length + 1} `
+      + `OR articles.body ILIKE $${queryVals.length + 1}) `;
+  queryVals.push(`%${search}%`);
 
   queryStr += `GROUP BY articles.article_id `; 
   
@@ -63,7 +75,10 @@ const selectArticles = (topic, sortBy = 'created_at', order = 'desc', limit = 10
 
   logger.info(`Selecting all articles from database where `
       + `${(topic) ? `topic:${topic} ` : ''}` 
-      + `sort_by:${sortBy} order:${order} limit:${limit} page:${page}`);
+      + `sort_by:${sortBy} order:${order} limit:${limit} page:${page} ` 
+      + `search:'${search}'`);
+
+  logger.debug(`QueryString: ${queryStr}`);
 
   return checkTopicProm
       .then(() => {
