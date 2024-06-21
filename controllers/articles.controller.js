@@ -40,8 +40,8 @@ const deleteArticle = (req, res, next) => {
 
   articlesModel.deleteArticleById(articleId)
       .then(() => {
-          // Return an empty object
-          res.status(204).send();
+        // Return an empty object
+        res.status(204).send();
       })
       .catch((err) => {
         next(err);
