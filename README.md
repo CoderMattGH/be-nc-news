@@ -4,7 +4,7 @@ Northcoders News API is a restful back-end element to the Northcoders News appli
 Northcoders News is a social news web application where users can read and post 
 articles, as well as comment and search.
 
-The API is currently hosted at `https://be-nc-news-4pai.onrender.com/api` which
+The API is currently hosted at `https://nc-news-api.codermatt.com/api/` which
 will provide a list of public endpoints to interact with.
 
 ## Installation
@@ -77,7 +77,7 @@ The file `.env.production` provides environment variables for the production env
 Example `.env.production` file:
 
 ```
-DATABASE_URL=postgres://postgres.xxxxxx:my_password@my_url.com:5432/postgres
+DATABASE_URL=postgres://username:password@my_url.com:5432/db-name
 LOGL='error'
 ```
 
