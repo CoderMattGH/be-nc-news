@@ -1,4 +1,4 @@
-# Northcoders News API
+# NC News API
 
 Northcoders News API is a restful back-end element to the Northcoders News application.  
 Northcoders News is a social news web application where users can read and post 
