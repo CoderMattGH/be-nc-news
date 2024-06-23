@@ -5,6 +5,6 @@ const app = require('./app.js');
 const {PORT = 9090} = process.env;
 const {IP_ADD = '127.0.0.1'} = process.env;
 
-app.listen(PORT, '127.0.0.1', () => {
+app.listen(PORT, IP_ADD, () => {
   logger.info(`Successfully listening on port ${PORT} on ${IP_ADD}`);
 });
